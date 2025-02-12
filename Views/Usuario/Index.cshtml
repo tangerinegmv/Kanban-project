@@ -1,0 +1,37 @@
+
+@{
+    ViewData["Title"] = "Usuario";
+}
+
+
+@model List<Kanban.Usuario> 
+
+<div class="text-center">
+    <h1 class="display-4">Listado de usuarios</h1>
+</div>
+<table class="table table-primary table-striped">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre de Usuario</th>
+      <th scope="col">Rol</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach(var usuario in Model)
+    {
+        <tr>
+            <th scope="row">@usuario.Id</th>
+            <td>@usuario.NombreDeUsuario</td>
+            <td>@usuario.RolUsuario</td>
+            @* <td><button type="button" class="btn btn-primary"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="ModificarUsuario" asp-route-id="@usuario.Id">Modificar</a></button></td>
+            <td><button type="button" class="btn btn-danger"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="BorrarUsuario" asp-route-id="@usuario.Id">Eliminar</a></button></td> *@
+        </tr>
+    }
+  </tbody>
+</table>
+<div class="text-center">
+    <button type="button" class="btn btn-success"><a   class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="CrearUsuario">Crear usuario</a></button>
+</div>

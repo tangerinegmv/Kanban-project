@@ -7,4 +7,8 @@
     <RootNamespace>tl2_proyecto_2024_tangerinegmv</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.2" />
+  </ItemGroup>
+
 </Project>
