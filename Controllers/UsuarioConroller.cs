@@ -29,5 +29,16 @@ public class UsuarioController : Controller
         return RedirectToAction("Index");
     }
 
-
+    [HttpGet]
+    public IActionResult ModificarUsuario(int id)
+    {
+        return View(usuarioRepository.Detalles(id));
+    }
+    [HttpPost]
+    public IActionResult ModificarUsuario(int id, Usuario usuario)
+    {
+        usuarioRepository.ModificarUsuario(id, usuario);
+        return RedirectToAction("Index");
+    }
+    
 }

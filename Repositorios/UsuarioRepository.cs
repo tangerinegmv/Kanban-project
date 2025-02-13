@@ -44,5 +44,44 @@ public class UsuarioRepository
         }
         return listaUsuario;
     }
+
+    public Usuario Detalles(int id)
+        {
+            var usuario = new Usuario();
+            using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            {
+                string query = "SELECT * FROM Usuario WHERE id = @id;";
+                SqliteCommand command = new SqliteCommand(query, connection);
+                command.Parameters.Add(new SqliteParameter("@id", id));
+                connection.Open();
+                using(SqliteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                    usuario.Id = Convert.ToInt32(reader["id"]);
+                    usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
+                    usuario.RolUsuario = (Kanban.Rol)Convert.ToInt32(reader["rolusuario"]);
+                        
+                    }
+                }
+                connection.Close();
+
+            }
+            return usuario;
+        }
+    public void ModificarUsuario(int id, Usuario usuario)
+        {
+            using ( SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            {
+                var query = "UPDATE Usuario SET nombre_de_usuario = @nombre_de_usuario, rolusuario = @rolusuario WHERE id = @id;";
+                connection.Open();
+                var command = new SqliteCommand(query, connection);
+                command.Parameters.Add(new SqliteParameter("@id", id));
+                command.Parameters.Add(new SqliteParameter("@nombre_de_usuario", usuario.NombreDeUsuario));
+                command.Parameters.Add(new SqliteParameter("@rolusuario", usuario.RolUsuario));
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        } 
   
 }
