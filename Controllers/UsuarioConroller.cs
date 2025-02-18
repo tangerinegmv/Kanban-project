@@ -52,4 +52,16 @@ public class UsuarioController : Controller
         usuarioRepository.EliminarUsuario(id);
         return RedirectToAction("Index");
     }
+
+    [HttpGet]
+    public IActionResult CambiarPassword(int id)
+    {
+        return View(usuarioRepository.Detalles(id));
+    }
+    [HttpPost]
+    public IActionResult CambiarPassword(int id, Usuario usuario)
+    {
+        usuarioRepository.CambiarPassword(id, usuario);
+        return RedirectToAction("Index");
+    }
 }

@@ -95,5 +95,19 @@ public class UsuarioRepository
             connection.Close();
         }
     }
+
+    public void CambiarPassword(int id, Usuario usuario)
+    {
+        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        {
+            var query = "UPDATE Usuario SET password = @password WHERE id = @id;";
+            connection.Open();
+            var command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            command.Parameters.Add(new SqliteParameter("@password", usuario.Password ?? throw new ArgumentNullException(nameof(usuario.Password))));
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+    }
   
 }
