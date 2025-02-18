@@ -14,13 +14,16 @@
             <p><strong>ID:</strong> @board.Id</p>
             <p><strong>Owner ID:</strong> @board.IdUsuarioPropietario</p>
             <p><strong>Description:</strong> @board.Descripcion</p>
+            <button type="button" class="btn btn-primary">
+                <a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>
+            </button>
         </div>
-        <button type="button" class="btn btn-primary"><a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a></button>
-
     }
 </div>
 <div class="text-center">
-    <button type="button" class="btn btn-success"><a   class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="CrearTablero">Crear tablero</a></button>
+    <button type="button" class="btn btn-success">
+        <a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="CrearTablero">Crear tablero</a>
+    </button>
 </div>
 <style>
     .kanban-board {
@@ -33,5 +36,14 @@
         margin: 10px;
         width: 200px;
         box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .board button {
+        margin-top: 10px;
+    }
+    .board a {
+        text-decoration: none;
     }
 </style>

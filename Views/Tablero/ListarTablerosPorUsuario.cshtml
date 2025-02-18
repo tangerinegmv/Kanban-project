@@ -1,0 +1,30 @@
+@model List<Kanban.Tablero>
+
+@{
+    ViewData["Title"] = "Tableros del Usuario";
+}
+
+<h1>Tableros del Usuario</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tablero in Model)
+        {
+            <tr>
+                <td>@tablero.Nombre</td>
+                <td>@tablero.Descripcion</td>
+                <td>
+                    <a asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@tablero.Id" class="btn btn-primary">Modificar</a>
+                    <a asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@tablero.Id" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

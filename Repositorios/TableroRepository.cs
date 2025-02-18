@@ -44,6 +44,32 @@ public class TableroRepository
         }
         return listaTablero;
     }
+
+     public List<Tablero> ListarTablerosPorUsuario(int idUsuario)
+        {
+            List<Tablero> listaTablero = new List<Tablero>();
+            using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            {
+                string query = "SELECT * FROM Tablero WHERE id_usuario_propietario = @id_usuario_propietario;";
+                SqliteCommand command = new SqliteCommand(query, connection);
+                command.Parameters.Add(new SqliteParameter("@id_usuario_propietario", idUsuario));
+                connection.Open();
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                    var tablero = new Tablero();
+                    tablero.Id= Convert.ToInt32(reader["id"]);
+                    tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
+                    tablero.Nombre= reader["nombre"].ToString();
+                    tablero.Descripcion=reader["descripcion"].ToString();
+                        listaTablero.Add(tablero);
+                    }
+                }
+                connection.Close();
+            }
+            return listaTablero;
+        }
     public Tablero ObtenerTablero(int id)
     {
         var tablero = new Tablero();
@@ -83,6 +109,7 @@ public class TableroRepository
             }
         }
     }
+
     public void EliminarTablero(int id)
     {
         using (SqliteConnection connection = new SqliteConnection(cadenaConexion))

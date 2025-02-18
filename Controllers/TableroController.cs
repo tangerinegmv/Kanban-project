@@ -17,6 +17,18 @@ public class TableroController : Controller
     {
         return View(tableroRepository.ListarTableros());
     }
+
+   [HttpGet]
+    public IActionResult ListarTablerosPorUsuario(int idUsuario)
+    {
+        var tableros = tableroRepository.ListarTablerosPorUsuario(idUsuario);
+         if (tableros == null)
+            {
+                return NotFound();
+            }
+            return View(tableros);
+    }
+
     [HttpGet]
     public IActionResult CrearTablero()
     {
