@@ -83,5 +83,17 @@ public class UsuarioRepository
                 connection.Close();
             }
         } 
+    public void EliminarUsuario(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        {
+            var query = "DELETE FROM Usuario WHERE id = @id;";
+            connection.Open();
+            var command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+    }
   
 }

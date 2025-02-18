@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+@model Kanban.Usuario
+
+<form asp-controller="Usuario" asp-action="EliminarUsuario">
+    <h2>Está por Eliminar el Usuario: @Model.NombreDeUsuario (ID: @Model.Id)</h2>
+    
+  <button type="submit" class="btn btn-outline-success">Eliminar</button>
+</form>
