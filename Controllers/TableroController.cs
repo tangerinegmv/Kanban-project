@@ -29,16 +29,16 @@ public class TableroController : Controller
         return RedirectToAction("Index");
     }
 
-    // [HttpGet]
-    // public IActionResult ModificarTablero(int id)
-    // {
-    //     return View(tableroRepository.Detalles(id));
-    // }
-    // [HttpPost]
-    // public IActionResult ModificarTablero(int id, Tablero tablero)
-    // {
-    //     tableroRepository.ModificarTablero(id, tablero);
-    //     return RedirectToAction("Index");
-    // }
+    [HttpGet]
+    public IActionResult ModificarTablero(int id)
+    {
+        return View(tableroRepository.ObtenerTablero(id));
+    }
+    [HttpPost]
+    public IActionResult ModificarTablero(int id, Tablero tablero)
+    {
+        tableroRepository.ModificarTablero(id, tablero);
+        return RedirectToAction("Index");
+    }
     
 }

@@ -15,6 +15,8 @@
             <p><strong>Owner ID:</strong> @board.IdUsuarioPropietario</p>
             <p><strong>Description:</strong> @board.Descripcion</p>
         </div>
+        <button type="button" class="btn btn-primary"><a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a></button>
+
     }
 </div>
 <div class="text-center">

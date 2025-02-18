@@ -31,16 +31,70 @@ public class TableroRepository
             {
                 while (reader.Read())
                 {
-                    var tablero = new Tablero(
-                    Convert.ToInt32(reader["id_usuario_propietario"]),
-                    reader["nombre"].ToString(),
-                    reader["descripcion"].ToString()
-                    );
+                    var tablero = new Tablero();
+                    tablero.Id= Convert.ToInt32(reader["id"]);
+                    tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
+                    tablero.Nombre= reader["nombre"].ToString();
+                    tablero.Descripcion=reader["descripcion"].ToString();
+
                     listaTablero.Add(tablero);
                 }
             }
             connection.Close();
         }
         return listaTablero;
+    }
+    public Tablero ObtenerTablero(int id)
+    {
+        var tablero = new Tablero();
+        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        {
+            string query = "SELECT * FROM Tablero WHERE id = @id;";
+            SqliteCommand command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            connection.Open();
+            using(SqliteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    tablero = new Tablero();
+                    tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
+                    tablero.Nombre= reader["nombre"].ToString();
+                    tablero.Descripcion=reader["descripcion"].ToString();
+                }
+            }
+            connection.Close();
+        }
+        return tablero;
+    }
+    public void ModificarTablero(int id, Tablero tablero)
+    {
+        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        {
+            string query = "UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion WHERE id = @id;";
+            connection.Open();
+            using (SqliteCommand command = new SqliteCommand(query, connection))
+            {
+                command.Parameters.Add(new SqliteParameter("@id", id));
+                command.Parameters.Add(new SqliteParameter("@nombre", tablero.Nombre));
+                command.Parameters.Add(new SqliteParameter("@descripcion", tablero.Descripcion));
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
+    public void EliminarTablero(int id)
+    {
+        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        {
+            string query = "DELETE FROM Tablero WHERE id = @id;";
+            connection.Open();
+            using (SqliteCommand command = new SqliteCommand(query, connection))
+            {
+                command.Parameters.Add(new SqliteParameter("@id", id));
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
     }
 }
