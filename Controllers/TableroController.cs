@@ -52,5 +52,17 @@ public class TableroController : Controller
         tableroRepository.ModificarTablero(id, tablero);
         return RedirectToAction("Index");
     }
+
+    [HttpGet]
+    public IActionResult EliminarTablero(int id)
+    {
+        return View(tableroRepository.ObtenerTablero(id));
+    }
+    [HttpPost]
+    public IActionResult EliminarTablero(Tablero tablero)
+    {
+        tableroRepository.EliminarTablero(tablero.Id);
+        return RedirectToAction("Index");
+    }
     
 }

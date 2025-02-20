@@ -85,13 +85,21 @@ public class UsuarioRepository
         } 
     public void EliminarUsuario(int id)
     {
+        if (!Verifica(id))
+        {
+            throw new InvalidOperationException("El usuario está asociado a tableros o tareas y no puede ser eliminado.");
+        }
         using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
         {
             var query = "DELETE FROM Usuario WHERE id = @id;";
             connection.Open();
             var command = new SqliteCommand(query, connection);
             command.Parameters.Add(new SqliteParameter("@id", id));
-            command.ExecuteNonQuery();
+            int filasAfectadas = command.ExecuteNonQuery();
+            if (filasAfectadas == 0)
+            {
+                throw new KeyNotFoundException($"No se encontro el usuario con ID: {id}.");
+            }
             connection.Close();
         }
     }
@@ -109,5 +117,23 @@ public class UsuarioRepository
             connection.Close();
         }
     }
+
+    private bool Verifica(int id)
+    {
+        int cantidad = 0;
+        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            {
+                string query = @"SELECT COUNT(*) FROM Usuario u
+                                LEFT JOIN Tablero t ON u.id = id_usuario_propietario
+                                LEFT JOIN Tarea x ON u.id = x.id_usuario_asignado
+                                WHERE u.id = @id AND (t.id IS NOT NULL OR x.id IS NOT NULL);";
+                connection.Open();
+                var command = new SqliteCommand(query, connection);
+                command.Parameters.Add(new SqliteParameter("@id", id));
+                cantidad = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+            }
+        return cantidad == 0;
+        }
   
 }

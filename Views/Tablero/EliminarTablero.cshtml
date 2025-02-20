@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Eliminar Tablero"; 
+}
+
+@model Kanban.Tablero
+
+<h1>Eliminar Tablero</h1>
+
+<h3>¿Estás seguro de que deseas eliminar este tablero?</h3>
+<div>
+    <h4>@Model.Nombre</h4>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Propietario:</strong> @Model.IdUsuarioPropietario</p>
+    <p><strong>Descripción:</strong> @Model.Descripcion</p>
+</div>
+
+<form asp-action="EliminarTablero" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

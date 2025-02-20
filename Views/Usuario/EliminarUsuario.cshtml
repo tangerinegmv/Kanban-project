@@ -4,8 +4,17 @@
 
 @model Kanban.Usuario
 
-<form asp-controller="Usuario" asp-action="EliminarUsuario">
-    <h2>Está por Eliminar el Usuario: @Model.NombreDeUsuario (ID: @Model.Id)</h2>
-    
-  <button type="submit" class="btn btn-outline-success">Eliminar</button>
+<h1>Eliminar Usuario</h1>
+
+<h3>¿Estás seguro de que deseas eliminar este usuario?</h3>
+<div>
+    <h4>@Model.NombreDeUsuario</h4>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Rol:</strong> @Model.RolUsuario</p>
+</div>
+
+<form asp-action="EliminarUsuario" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>

@@ -47,9 +47,9 @@ public class UsuarioController : Controller
         return View(usuarioRepository.Detalles(id));
     }
     [HttpPost]
-    public IActionResult EliminarUsuario(int id, Usuario usuario)
+    public IActionResult EliminarUsuario(Usuario usuario)
     {
-        usuarioRepository.EliminarUsuario(id);
+        usuarioRepository.EliminarUsuario(usuario.Id);
         return RedirectToAction("Index");
     }
 

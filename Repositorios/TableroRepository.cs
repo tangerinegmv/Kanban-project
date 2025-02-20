@@ -84,6 +84,7 @@ public class TableroRepository
                 while (reader.Read())
                 {
                     tablero = new Tablero();
+                    tablero.Id= Convert.ToInt32(reader["id"]);
                     tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
                     tablero.Nombre= reader["nombre"].ToString();
                     tablero.Descripcion=reader["descripcion"].ToString();
