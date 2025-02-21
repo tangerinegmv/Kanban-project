@@ -31,4 +31,34 @@ public class TareaController: Controller
         ViewData["IdTablero"] = idTablero;
         return View(tareas);
     }
+
+    [HttpGet]   
+    public IActionResult Detalles(int id)
+    {
+        var tarea = tareaRepository.Detalles(id);
+        return View(tarea);
+    }
+    [HttpGet]
+    public IActionResult ModificarTarea(int id)
+    {
+        
+        var tarea = tareaRepository.Detalles(id);
+        return View(tarea);
+    }
+    [HttpPost]
+    public IActionResult ModificarTarea(int id, Tarea tarea)
+    {
+        var tareaExistente = tareaRepository.Detalles(id);
+        
+        if (tareaExistente == null)
+        {
+            return NotFound(); 
+        }
+
+        tarea.IdTablero = tareaExistente.IdTablero;
+
+        tareaRepository.ModificarTarea(id, tarea);
+
+        return RedirectToAction("ListarTareasPorTablero", new { idTablero = tarea.IdTablero });
+    }
 }

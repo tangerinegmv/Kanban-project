@@ -69,4 +69,55 @@ public class TareaRepository
         }
         return listaTarea;
     }
+
+    public Tarea Detalles(int id)
+    {
+        var tarea = new Tarea();
+        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        {
+            string query = "SELECT * FROM Tarea WHERE id = @id;";
+            SqliteCommand command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            connection.Open();
+            using(SqliteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    tarea.Id = Convert.ToInt32(reader["id"]);
+                    tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
+                    tarea.Nombre = reader["nombre"].ToString();
+                    tarea.Descripcion = reader["descripcion"].ToString();
+                    tarea.Color = reader["color"].ToString();
+                    tarea.Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]);
+                    tarea.IdUsuarioAsignado = reader["id_usuario_asignado"] == DBNull.Value ? null : (int?)Convert.ToInt32(reader["id_usuario_asignado"]);
+                }
+            }
+            connection.Close();
+        }
+        return tarea;
+    }
+
+    public void ModificarTarea(int id, Tarea tarea)
+    {
+        using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+        var query = @"UPDATE Tarea 
+                        SET nombre = @nombre, descripcion = @descripcion, color = @color, estado = @estado
+                        WHERE id = @id;
+                        ";
+        connection.Open();
+        using (var command = new SqliteCommand(query, connection))
+        {
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            command.Parameters.Add(new SqliteParameter("@nombre", tarea.Nombre));
+            command.Parameters.Add(new SqliteParameter("@descripcion", tarea.Descripcion));
+            command.Parameters.Add(new SqliteParameter("@color", tarea.Color));
+            command.Parameters.Add(new SqliteParameter("@estado", tarea.Estado));
+
+            command.ExecuteNonQuery();
+
+
+            connection.Close();
+        }
+
+    }
 }
