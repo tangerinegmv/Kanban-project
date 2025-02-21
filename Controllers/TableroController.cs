@@ -37,7 +37,7 @@ public class TableroController : Controller
     [HttpPost]
     public IActionResult CrearTablero(Tablero tablero)
     {
-        tableroRepository.CrearTablero(tablero);
+        Tablero nuevo = tableroRepository.CrearTablero(tablero);
         return RedirectToAction("Index");
     }
 

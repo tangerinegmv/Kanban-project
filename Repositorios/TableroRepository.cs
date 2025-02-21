@@ -3,21 +3,31 @@ using Kanban;
 public class TableroRepository
 {
     private const string cadenaConexion = @"Data Source=Kanban.db";
-    public void CrearTablero(Tablero tablero)
+    public Tablero CrearTablero(Tablero tablero)
     {
+        Tablero? nuevo = null;
         using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
         {
-            var query = "INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion) VALUES (@id_usuario_propietario, @nombre, @descripcion);";
+            var query = @"INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion) 
+                          VALUES (@id_usuario_propietario, @nombre, @descripcion);
+                          SELECT last_insert_rowid();";
             connection.Open();
             using (var command = new SqliteCommand(query, connection))
             {
                 command.Parameters.Add(new SqliteParameter("@id_usuario_propietario", tablero.IdUsuarioPropietario));
                 command.Parameters.Add(new SqliteParameter("@nombre", tablero.Nombre));
                 command.Parameters.Add(new SqliteParameter("@descripcion", tablero.Descripcion));
-                command.ExecuteNonQuery();
+                int idGenerado = Convert.ToInt32(command.ExecuteScalar());
+                nuevo = new Tablero();
+                nuevo.Id = idGenerado;
+                nuevo.IdUsuarioPropietario = tablero.IdUsuarioPropietario;
+                nuevo.Nombre = tablero.Nombre;
+                nuevo.Descripcion = tablero.Descripcion;
                 connection.Close();
             }
+        
         }
+        return nuevo;
     }
     public List<Tablero> ListarTableros()
     {

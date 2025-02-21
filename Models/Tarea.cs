@@ -15,7 +15,7 @@ namespace Kanban
         private string nombre;
         private string descripcion;
         private string color;
-        private int? idUsiarioAsignado;
+        private int? idUsuarioAsignado;
 
         public int Id { get => id; set => id = value; }
         public int IdTablero { get => idTablero; set => idTablero = value; }
@@ -23,6 +23,6 @@ namespace Kanban
         public string Descripcion { get => descripcion; set => descripcion = value; }
         public string Color { get => color; set => color = value; }
         public EstadoTarea Estado { get; set; }
-        public int? IdUsiarioAsignado { get => idUsiarioAsignado; set => idUsiarioAsignado = value; }
+        public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
     }
 }

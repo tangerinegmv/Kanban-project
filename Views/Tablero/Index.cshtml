@@ -17,6 +17,8 @@
             <button type="button" class="btn btn-primary">
                 <a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>
             </button>
+            <button type="button" class="btn btn-primary">
+                <a class="nav-link text-light" asp-area="" asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@board.Id">Tareas</a>
             <button type="button" class="btn btn-danger">
                 <a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@board.Id">Eliminar</a>
             </button>
