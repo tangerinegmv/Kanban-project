@@ -61,4 +61,22 @@ public class TareaController: Controller
 
         return RedirectToAction("ListarTareasPorTablero", new { idTablero = tarea.IdTablero });
     }
+
+    [HttpGet]
+    public IActionResult EliminarTarea(int id)
+    {
+        var tarea = tareaRepository.Detalles(id);
+        return View(tarea);
+    }
+    [HttpPost]
+    public IActionResult EliminarTarea(int id, Tarea tarea)
+    {
+        var tareaExistente = tareaRepository.Detalles(id);
+        if (tareaExistente == null)
+        {
+            return NotFound();
+        }
+        tareaRepository.EliminarTarea(id);
+        return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
+    }
 }

@@ -105,19 +105,28 @@ public class TareaRepository
                         WHERE id = @id;
                         ";
         connection.Open();
-        using (var command = new SqliteCommand(query, connection))
-        {
-            command.Parameters.Add(new SqliteParameter("@id", id));
-            command.Parameters.Add(new SqliteParameter("@nombre", tarea.Nombre));
-            command.Parameters.Add(new SqliteParameter("@descripcion", tarea.Descripcion));
-            command.Parameters.Add(new SqliteParameter("@color", tarea.Color));
-            command.Parameters.Add(new SqliteParameter("@estado", tarea.Estado));
+        using var command = new SqliteCommand(query, connection);
+        command.Parameters.Add(new SqliteParameter("@id", id));
+        command.Parameters.Add(new SqliteParameter("@nombre", tarea.Nombre));
+        command.Parameters.Add(new SqliteParameter("@descripcion", tarea.Descripcion));
+        command.Parameters.Add(new SqliteParameter("@color", tarea.Color));
+        command.Parameters.Add(new SqliteParameter("@estado", tarea.Estado));
 
-            command.ExecuteNonQuery();
+        command.ExecuteNonQuery();
 
 
-            connection.Close();
-        }
+        connection.Close();
 
+    }
+
+    public void EliminarTarea(int id)
+    {
+        using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+        var query = @"DELETE FROM Tarea WHERE id = @id;";
+        connection.Open();
+        using SqliteCommand command = new SqliteCommand(query, connection);
+        command.Parameters.Add(new SqliteParameter("@id", id));
+        command.ExecuteNonQuery();
+        connection.Close();
     }
 }
