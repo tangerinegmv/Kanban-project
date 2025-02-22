@@ -134,6 +134,18 @@ public class UsuarioRepository
                 connection.Close();
             }
         return cantidad == 0;
-        }
+    }
+
+    public void AsignarUsuario(int idUsuario, int idTarea)
+    {
+    using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+    var query = "UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id = @idTarea;";
+    connection.Open();
+    var command = new SqliteCommand(query, connection);
+    command.Parameters.Add(new SqliteParameter("@idUsuario", idUsuario));
+    command.Parameters.Add(new SqliteParameter("@idTarea", idTarea));
+    command.ExecuteNonQuery();
+    connection.Close();
+    }
   
 }

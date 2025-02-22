@@ -43,7 +43,7 @@ public class TareaRepository
     }
     public List<Tarea> ListarTareasPorTablero(int idTablero)
     {
-        List<Tarea> listaTarea = new List<Tarea>();
+        List<Tarea> listaTarea = [];
         using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
         {
             string query = "SELECT * FROM Tarea WHERE id_tablero = @id_tablero;";
@@ -68,6 +68,35 @@ public class TareaRepository
             connection.Close();
         }
         return listaTarea;
+    }
+
+    public List<Tarea> ListarTareasPorUsuario(int idUsuario)
+    {
+        List<Tarea> listaTarea = [];
+        using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+        var query = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @id_usuario;";
+        SqliteCommand command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id_usuario_asignado", idUsuario));
+            connection.Open();
+            using(SqliteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var tarea = new Tarea();
+                    tarea.Id = Convert.ToInt32(reader["id"]);
+                    tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
+                    tarea.Nombre = reader["nombre"].ToString();
+                    tarea.Descripcion = reader["descripcion"].ToString();
+                    tarea.Color = reader["color"].ToString();
+                    tarea.Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]);
+                    tarea.IdUsuarioAsignado = reader["id_usuario_asignado"] == DBNull.Value ? null : (int?)Convert.ToInt32(reader["id_usuario_asignado"]);
+                    listaTarea.Add(tarea);
+                }
+            }
+            connection.Close();
+        
+        return listaTarea;
+
     }
 
     public Tarea Detalles(int id)
@@ -129,4 +158,6 @@ public class TareaRepository
         command.ExecuteNonQuery();
         connection.Close();
     }
+
+    
 }

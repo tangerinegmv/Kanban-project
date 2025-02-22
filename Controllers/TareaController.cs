@@ -31,6 +31,13 @@ public class TareaController: Controller
         ViewData["IdTablero"] = idTablero;
         return View(tareas);
     }
+    [HttpGet]
+    public IActionResult ListarTareasPorUsuario(int idUsuario)
+    {
+        var tareas = tareaRepository.ListarTareasPorUsuario(idUsuario);
+        ViewData["IdUsuario"] = idUsuario;
+        return View(tareas);
+    }
 
     [HttpGet]   
     public IActionResult Detalles(int id)
@@ -79,4 +86,5 @@ public class TareaController: Controller
         tareaRepository.EliminarTarea(id);
         return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
     }
+    
 }
