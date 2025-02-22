@@ -6,11 +6,14 @@ using tl2_proyecto_2024_tangerinegmv.Controllers;
 public class TareaController: Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private TareaRepository tareaRepository = new TareaRepository();
-    public TareaController(ILogger<HomeController> logger)
+    //private TareaRepository tareaRepository = new TareaRepository();
+    private readonly ITareaRepository _tareaRepository;
+    public TareaController(ILogger<HomeController> logger, ITareaRepository tareaRepository)
     {
+        _tareaRepository = tareaRepository;
         _logger = logger;
     }
+   
     [HttpGet]
     public IActionResult CrearTarea(int idTablero)
     {
@@ -21,20 +24,20 @@ public class TareaController: Controller
     public IActionResult CrearTarea(int idTablero, Tarea tarea)
     {
         //ViewData["idTablero"] = idTablero;
-        Tarea nueva = tareaRepository.CrearTarea(idTablero, tarea);
+        Tarea nueva = _tareaRepository.CrearTarea(idTablero, tarea);
         return RedirectToAction("ListarTareasPorTablero", new { idTablero = idTablero });
     }
     [HttpGet]
     public IActionResult ListarTareasPorTablero(int idTablero)
     {
-        var tareas = tareaRepository.ListarTareasPorTablero(idTablero);
+        var tareas = _tareaRepository.ListarTareasPorTablero(idTablero);
         ViewData["IdTablero"] = idTablero;
         return View(tareas);
     }
     [HttpGet]
     public IActionResult ListarTareasPorUsuario(int idUsuario)
     {
-        var tareas = tareaRepository.ListarTareasPorUsuario(idUsuario);
+        var tareas = _tareaRepository.ListarTareasPorUsuario(idUsuario);
         ViewData["IdUsuario"] = idUsuario;
         return View(tareas);
     }
@@ -42,20 +45,20 @@ public class TareaController: Controller
     [HttpGet]   
     public IActionResult Detalles(int id)
     {
-        var tarea = tareaRepository.Detalles(id);
+        var tarea = _tareaRepository.Detalles(id);
         return View(tarea);
     }
     [HttpGet]
     public IActionResult ModificarTarea(int id)
     {
         
-        var tarea = tareaRepository.Detalles(id);
+        var tarea = _tareaRepository.Detalles(id);
         return View(tarea);
     }
     [HttpPost]
     public IActionResult ModificarTarea(int id, Tarea tarea)
     {
-        var tareaExistente = tareaRepository.Detalles(id);
+        var tareaExistente = _tareaRepository.Detalles(id);
         
         if (tareaExistente == null)
         {
@@ -64,7 +67,7 @@ public class TareaController: Controller
 
         tarea.IdTablero = tareaExistente.IdTablero;
 
-        tareaRepository.ModificarTarea(id, tarea);
+        _tareaRepository.ModificarTarea(id, tarea);
 
         return RedirectToAction("ListarTareasPorTablero", new { idTablero = tarea.IdTablero });
     }
@@ -72,19 +75,19 @@ public class TareaController: Controller
     [HttpGet]
     public IActionResult EliminarTarea(int id)
     {
-        var tarea = tareaRepository.Detalles(id);
+        var tarea = _tareaRepository.Detalles(id);
         return View(tarea);
     }
     [HttpPost]
     public IActionResult EliminarTarea(int id, Tarea tarea)
     {
-        var tareaExistente = tareaRepository.Detalles(id);
+        var tareaExistente = _tareaRepository.Detalles(id);
         if (tareaExistente == null)
         {
             return NotFound();
         }
-        tareaRepository.EliminarTarea(id);
+        _tareaRepository.EliminarTarea(id);
         return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
     }
-    
+
 }

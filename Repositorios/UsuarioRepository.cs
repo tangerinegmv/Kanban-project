@@ -1,11 +1,19 @@
 using Microsoft.Data.Sqlite;
 using Kanban;
-public class UsuarioRepository
+public class UsuarioRepository: IUsuarioRepository
 {
-    private const string cadenaConexion = @"Data Source=Kanban.db";
+   // private const string cadenaConexion = @"Data Source=Kanban.db";
+    private readonly string _connectionString;
+
+    public UsuarioRepository(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+    
+
     public void CrearUsuario(Usuario usuario)
     {
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             var query = "INSERT INTO Usuario (nombre_de_usuario, password, rolusuario) VALUES (@nombre_de_usuario, @password, @rolusuario);";
             connection.Open();
@@ -23,7 +31,7 @@ public class UsuarioRepository
     public List<Usuario> ListarUsuarios()
     {
         List<Usuario> listaUsuario = new List<Usuario>();
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             string query = "SELECT * FROM Usuario;";
             SqliteCommand command = new SqliteCommand(query, connection);
@@ -48,7 +56,7 @@ public class UsuarioRepository
     public Usuario Detalles(int id)
         {
             var usuario = new Usuario();
-            using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
                 string query = "SELECT * FROM Usuario WHERE id = @id;";
                 SqliteCommand command = new SqliteCommand(query, connection);
@@ -71,7 +79,7 @@ public class UsuarioRepository
         }
     public void ModificarUsuario(int id, Usuario usuario)
         {
-            using ( SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            using ( SqliteConnection connection = new SqliteConnection(_connectionString))
             {
                 var query = "UPDATE Usuario SET nombre_de_usuario = @nombre_de_usuario, rolusuario = @rolusuario WHERE id = @id;";
                 connection.Open();
@@ -89,7 +97,7 @@ public class UsuarioRepository
         {
             throw new InvalidOperationException("El usuario está asociado a tableros o tareas y no puede ser eliminado.");
         }
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             var query = "DELETE FROM Usuario WHERE id = @id;";
             connection.Open();
@@ -106,7 +114,7 @@ public class UsuarioRepository
 
     public void CambiarPassword(int id, Usuario usuario)
     {
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             var query = "UPDATE Usuario SET password = @password WHERE id = @id;";
             connection.Open();
@@ -121,7 +129,7 @@ public class UsuarioRepository
     private bool Verifica(int id)
     {
         int cantidad = 0;
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
                 string query = @"SELECT COUNT(*) FROM Usuario u
                                 LEFT JOIN Tablero t ON u.id = id_usuario_propietario
@@ -138,7 +146,7 @@ public class UsuarioRepository
 
     public void AsignarUsuario(int idUsuario, int idTarea)
     {
-    using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+    using SqliteConnection connection = new SqliteConnection(_connectionString);
     var query = "UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id = @idTarea;";
     connection.Open();
     var command = new SqliteCommand(query, connection);

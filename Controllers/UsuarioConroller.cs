@@ -6,16 +6,20 @@ using tl2_proyecto_2024_tangerinegmv.Controllers;
 public class UsuarioController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private UsuarioRepository usuarioRepository = new UsuarioRepository();
+    //private _usuarioRepository usuarioRepository = new UsuarioRepository();
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public UsuarioController(ILogger<HomeController> logger)
+
+    public UsuarioController(IUsuarioRepository usuarioRepository, ILogger<HomeController> logger)
     {
+        _usuarioRepository = usuarioRepository;
         _logger = logger;
     }
+   
 
     public IActionResult Index()
     {
-        return View(usuarioRepository.ListarUsuarios());
+        return View(_usuarioRepository.ListarUsuarios());
     }
     [HttpGet]
     public IActionResult CrearUsuario()
@@ -25,43 +29,43 @@ public class UsuarioController : Controller
     [HttpPost]
     public IActionResult CrearUsuario(Usuario usuario)
     {
-        usuarioRepository.CrearUsuario(usuario);
+        _usuarioRepository.CrearUsuario(usuario);
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult ModificarUsuario(int id)
     {
-        return View(usuarioRepository.Detalles(id));
+        return View(_usuarioRepository.Detalles(id));
     }
     [HttpPost]
     public IActionResult ModificarUsuario(int id, Usuario usuario)
     {
-        usuarioRepository.ModificarUsuario(id, usuario);
+        _usuarioRepository.ModificarUsuario(id, usuario);
         return RedirectToAction("Index");
     }
     
     [HttpGet]   
     public IActionResult EliminarUsuario(int id)
     {
-        return View(usuarioRepository.Detalles(id));
+        return View(_usuarioRepository.Detalles(id));
     }
     [HttpPost]
     public IActionResult EliminarUsuario(Usuario usuario)
     {
-        usuarioRepository.EliminarUsuario(usuario.Id);
+        _usuarioRepository.EliminarUsuario(usuario.Id);
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult CambiarPassword(int id)
     {
-        return View(usuarioRepository.Detalles(id));
+        return View(_usuarioRepository.Detalles(id));
     }
     [HttpPost]
     public IActionResult CambiarPassword(int id, Usuario usuario)
     {
-        usuarioRepository.CambiarPassword(id, usuario);
+        _usuarioRepository.CambiarPassword(id, usuario);
         return RedirectToAction("Index");
     }
 }

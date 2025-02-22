@@ -1,12 +1,20 @@
 using Microsoft.Data.Sqlite;
 using Kanban;
-public class TareaRepository
+public class TareaRepository: ITareaRepository
 {
-    private const string cadenaConexion = @"Data Source=Kanban.db";
+    //private const string cadenaConexion = @"Data Source=Kanban.db";
+    private readonly string _connectionString;
+
+    public TareaRepository(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+    
+
     public Tarea CrearTarea(int idTablero, Tarea tarea)
     {
         Tarea? nueva = null;
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             var query = @"INSERT INTO Tarea 
                         (id_tablero, nombre, descripcion, color, estado, id_usuario_asignado) 
@@ -44,7 +52,7 @@ public class TareaRepository
     public List<Tarea> ListarTareasPorTablero(int idTablero)
     {
         List<Tarea> listaTarea = [];
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             string query = "SELECT * FROM Tarea WHERE id_tablero = @id_tablero;";
             SqliteCommand command = new SqliteCommand(query, connection);
@@ -73,7 +81,7 @@ public class TareaRepository
     public List<Tarea> ListarTareasPorUsuario(int idUsuario)
     {
         List<Tarea> listaTarea = [];
-        using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+        using SqliteConnection connection = new SqliteConnection(_connectionString);
         var query = @"SELECT * FROM Tarea WHERE id_usuario_asignado = @id_usuario;";
         SqliteCommand command = new SqliteCommand(query, connection);
             command.Parameters.Add(new SqliteParameter("@id_usuario_asignado", idUsuario));
@@ -102,7 +110,7 @@ public class TareaRepository
     public Tarea Detalles(int id)
     {
         var tarea = new Tarea();
-        using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             string query = "SELECT * FROM Tarea WHERE id = @id;";
             SqliteCommand command = new SqliteCommand(query, connection);
@@ -128,7 +136,7 @@ public class TareaRepository
 
     public void ModificarTarea(int id, Tarea tarea)
     {
-        using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+        using SqliteConnection connection = new SqliteConnection(_connectionString);
         var query = @"UPDATE Tarea 
                         SET nombre = @nombre, descripcion = @descripcion, color = @color, estado = @estado
                         WHERE id = @id;
@@ -150,7 +158,7 @@ public class TareaRepository
 
     public void EliminarTarea(int id)
     {
-        using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+        using SqliteConnection connection = new SqliteConnection(_connectionString);
         var query = @"DELETE FROM Tarea WHERE id = @id;";
         connection.Open();
         using SqliteCommand command = new SqliteCommand(query, connection);
