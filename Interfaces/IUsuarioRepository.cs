@@ -8,4 +8,5 @@ public interface IUsuarioRepository
     public void ModificarUsuario(int id, Usuario usuario);
     public void EliminarUsuario(int id);
     public void CambiarPassword(int id, Usuario usuario);
+    public Usuario GetUsuarioNombre(string nombre);
 }

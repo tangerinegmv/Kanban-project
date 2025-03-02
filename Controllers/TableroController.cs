@@ -5,10 +5,10 @@ using tl2_proyecto_2024_tangerinegmv.Controllers;
 
 public class TableroController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<TableroController> _logger;
     //private TableroRepository tableroRepository = new TableroRepository();
     private readonly ITableroRepository _tableroRepository;
-    public TableroController(ILogger<HomeController> logger, ITableroRepository tableroRepository)
+    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository)
     {
         _tableroRepository = tableroRepository;
         _logger = logger;

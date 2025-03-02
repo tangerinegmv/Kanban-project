@@ -5,12 +5,12 @@ using tl2_proyecto_2024_tangerinegmv.Controllers;
 
 public class UsuarioController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<UsuarioController> _logger;
     //private _usuarioRepository usuarioRepository = new UsuarioRepository();
     private readonly IUsuarioRepository _usuarioRepository;
 
 
-    public UsuarioController(IUsuarioRepository usuarioRepository, ILogger<HomeController> logger)
+    public UsuarioController(IUsuarioRepository usuarioRepository, ILogger<UsuarioController> logger)
     {
         _usuarioRepository = usuarioRepository;
         _logger = logger;

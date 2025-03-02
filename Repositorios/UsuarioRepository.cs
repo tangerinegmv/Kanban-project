@@ -155,5 +155,45 @@ public class UsuarioRepository: IUsuarioRepository
     command.ExecuteNonQuery();
     connection.Close();
     }
+
+    public Usuario GetUsuarioNombre(string nombre)
+  {
+    Usuario usuarioBuscado = null;
+
+    string query = @"SELECT * FROM 
+                     Usuario 
+                     WHERE nombre_de_usuario = @NombreDeUsuario;";
+
+    using (SqliteConnection connection = new SqliteConnection(_connectionString))
+    {
+      connection.Open();
+
+      SqliteCommand command = new SqliteCommand(query, connection);
+
+      command.Parameters.AddWithValue("@NombreDeUsuario", nombre);
+      using (SqliteDataReader reader = command.ExecuteReader())
+      {
+        if (reader.Read())
+        {
+          usuarioBuscado = new Usuario
+          {
+            Id = reader.GetInt32(0),
+            NombreDeUsuario = reader.GetString(1),
+            Password = reader.GetString(2),
+            RolUsuario = (Rol)reader.GetInt32(3)
+          };
+        }
+      }
+
+      connection.Close();
+    }
+
+    if (usuarioBuscado == null)
+    {
+      throw new KeyNotFoundException($"No se encontro el usuario con nombre: {nombre}.");
+    }
+
+    return usuarioBuscado;
+  }
   
 }

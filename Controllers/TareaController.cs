@@ -5,10 +5,10 @@ using tl2_proyecto_2024_tangerinegmv.Controllers;
 
 public class TareaController: Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<TareaController> _logger;
     //private TareaRepository tareaRepository = new TareaRepository();
     private readonly ITareaRepository _tareaRepository;
-    public TareaController(ILogger<HomeController> logger, ITareaRepository tareaRepository)
+    public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository)
     {
         _tareaRepository = tareaRepository;
         _logger = logger;

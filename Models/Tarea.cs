@@ -2,11 +2,11 @@ namespace Kanban
 {
     public enum EstadoTarea
     {
-        Ideas,
-        ToDo,
-        Doing,
-        Review, 
-        Done
+        Ideas=1,
+        ToDo=2,
+        Doing=3,
+        Review=4, 
+        Done=5
     }
     public class Tarea
     {
