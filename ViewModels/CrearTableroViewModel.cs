@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Kanban;
+namespace Kanban.ViewModels;
+
 public class CrearTableroViewModel
 {
   private int idUsuarioPropietario;

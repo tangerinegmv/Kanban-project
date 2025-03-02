@@ -1,5 +1,6 @@
 using SQLitePCL;
 using Kanban;
+using Kanban.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using tl2_proyecto_2024_tangerinegmv.Controllers;
 

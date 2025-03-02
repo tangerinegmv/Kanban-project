@@ -1,5 +1,6 @@
 using SQLitePCL;
 using Kanban;
+using Kanban.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using tl2_proyecto_2024_tangerinegmv.Controllers;
 
@@ -17,9 +18,20 @@ public class UsuarioController : Controller
     }
    
 
-    public IActionResult Index()
+    public IActionResult ListarUsuarios() 
     {
-        return View(_usuarioRepository.ListarUsuarios());
+        try
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated"))) return RedirectToAction ("Index", "Login");
+            List<ListarUsuariosViewModel> usuarios = _usuarioRepository.ListarUsuarios();
+            return View(usuarios);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            ViewBag.ErrorMessage = "No se pudo cargar la lista de clientes";
+            return View(new List<ListarUsuariosViewModel>());
+        }
     }
     [HttpGet]
     public IActionResult CrearUsuario()

@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Kanban;
+using Kanban.ViewModels;
 public class UsuarioRepository: IUsuarioRepository
 {
    // private const string cadenaConexion = @"Data Source=Kanban.db";
@@ -28,19 +29,19 @@ public class UsuarioRepository: IUsuarioRepository
         }
     }
 
-    public List<Usuario> ListarUsuarios()
+    public List<ListarUsuariosViewModel> ListarUsuarios()
     {
-        List<Usuario> listaUsuario = new List<Usuario>();
+        List<ListarUsuariosViewModel> listaUsuario = new List<ListarUsuariosViewModel>();
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
-            string query = "SELECT * FROM Usuario;";
+            string query = @"SELECT * FROM Usuario;";
             SqliteCommand command = new SqliteCommand(query, connection);
             connection.Open();
             using(SqliteDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    var usuario = new Usuario();
+                    var usuario = new ListarUsuariosViewModel();
                     usuario.Id = Convert.ToInt32(reader["id"]);
                     usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
                     usuario.RolUsuario = (Kanban.Rol)Convert.ToInt32(reader["rolusuario"]);

@@ -1,9 +1,9 @@
 using Kanban;
-
+using Kanban.ViewModels;
 public interface IUsuarioRepository
 {
     public void CrearUsuario(Usuario usuario);
-    public List<Usuario> ListarUsuarios();
+    public List<ListarUsuariosViewModel> ListarUsuarios();
     public Usuario Detalles(int id);
     public void ModificarUsuario(int id, Usuario usuario);
     public void EliminarUsuario(int id);

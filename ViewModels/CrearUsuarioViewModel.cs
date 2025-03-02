@@ -1,4 +1,4 @@
-using Kanban;
+namespace Kanban.ViewModels;
 using System.ComponentModel.DataAnnotations;
 public class CrearUsuarioViewModel
 {
