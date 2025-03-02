@@ -9,6 +9,8 @@ builder.Services.AddScoped<ITareaRepository,TareaRepository>();
 string connectionString = builder.Configuration.GetConnectionString("SqliteConnection")!.ToString();
 builder.Services.AddSingleton<string>(connectionString);
 
+builder.Services.AddHttpContextAccessor();
+
 // Habilitar servicios de sesiones
 builder.Services.AddSession(options =>
 {

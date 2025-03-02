@@ -1,4 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using Kanban
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    bool isAuthenticated = false;
+    var username = string.Empty;
+    string rol = HttpContextAccessor.HttpContext.Session.GetString("Rol");
+    string admin = Rol.Administrador.ToString();
+
+    if (HttpContextAccessor.HttpContext.Session.GetString("IsAuthenticated") == "true")
+    {
+        isAuthenticated = true;
+        username = HttpContextAccessor.HttpContext.Session.GetString("NombreDeUsuario");
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,18 +34,37 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                          
+                        @if(isAuthenticated == false)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Iniciar Sesión</a>
+                            </li>
+                        }
+                       
+                        @if(isAuthenticated == true)
+                        {
+                            <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuario</a>
-                        </li>
-                        <li class="nav-item">
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="CerrarSesion">Cerrar Sesión</a>
+                            </li>
+
+                            <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Tablero" asp-action="Index">Tableros</a>
-                        </li>
+                            </li>
+                            @if(rol == admin)
+                            {
+                                <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                                </li>
+                            }
+                        }
+                        
                     </ul>
                 </div>
             </div>
