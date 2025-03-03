@@ -2,13 +2,13 @@ namespace Kanban.ViewModels;
 using System.ComponentModel.DataAnnotations;
 public class CrearUsuarioViewModel
 {
-    private string usuario;
+    private string nombreDeUsuario;
     private string password;
     private Rol? rolUsuario;
 
     [Required]
     [StringLength(100, ErrorMessage = "El nombre de usuario no debe exceder los 100 caracteres.")]
-    public string Usuario { get => usuario; set => usuario = value; }
+    public string NombreDeUsuario { get => nombreDeUsuario; set => nombreDeUsuario = value; }
 
     [Required]
     [StringLength(100, ErrorMessage = "La contraseña no debe superar los 100 caracteres")]

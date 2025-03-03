@@ -6,7 +6,7 @@
     
     <h1 class="display-4">Crear Usuario</h1>
 
-@model Kanban.Usuario
+@model Kanban.ViewModels.CrearUsuarioViewModel
 
 <form asp-controller="Usuario" asp-action="CrearUsuario">
   <div class="mb-3">
@@ -25,3 +25,4 @@
    <a asp-action="ListarUsuarios" class="btn btn-secondary">Cancelar</a>
 </form>
 </div>
+@section Scripts{<partial name="_ValidationScriptsPartial"/>}

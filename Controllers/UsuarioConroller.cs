@@ -36,13 +36,41 @@ public class UsuarioController : Controller
     [HttpGet]
     public IActionResult CrearUsuario()
     {
-        return View(new Usuario());
+        try
+        {
+            if (HttpContext.Session.GetString("IsAuthenticated") != null &&
+                HttpContext.Session.GetString("Rol") == Rol.Administrador.ToString())
+            {
+                return View(new CrearUsuarioViewModel());
+            }else{
+                return RedirectToAction("ListarTableros", "Tablero");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            ViewBag.ErrorMessage = "No se pudo cargar el formulario de creación de usuario";
+            return View(ListarUsuarios());
+        }
     }
     [HttpPost]
-    public IActionResult CrearUsuario(Usuario usuario)
+    public IActionResult CrearUsuario(CrearUsuarioViewModel usuario)
     {
-        _usuarioRepository.CrearUsuario(usuario);
-        return RedirectToAction("Index");
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("ListarUsuarios");
+            }
+            Usuario nuevo = _usuarioRepository.CrearUsuario(usuario);
+            return RedirectToAction("ListarUsuarios");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            ViewBag.ErrorMessage = "No se pudo crear el usuario";
+            return View("ListarUsuarios");
+        }
     }
 
     [HttpGet]

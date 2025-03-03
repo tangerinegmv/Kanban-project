@@ -12,21 +12,32 @@ public class UsuarioRepository: IUsuarioRepository
     }
     
 
-    public void CrearUsuario(Usuario usuario)
+    public Usuario CrearUsuario(CrearUsuarioViewModel usuario)
     {
+        Usuario nuevoUsuario = null;
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             var query = "INSERT INTO Usuario (nombre_de_usuario, password, rolusuario) VALUES (@nombre_de_usuario, @password, @rolusuario);";
             connection.Open();
-            using (var command = new SqliteCommand(query, connection))
-            {
-                command.Parameters.Add(new SqliteParameter("@nombre_de_usuario", usuario.NombreDeUsuario));
-                command.Parameters.Add(new SqliteParameter("@password", usuario.Password));
-                command.Parameters.Add(new SqliteParameter("@rolusuario", usuario.RolUsuario));
-                command.ExecuteNonQuery();
-                connection.Close();
-            }
+            using var command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@nombre_de_usuario", usuario.NombreDeUsuario));
+            command.Parameters.Add(new SqliteParameter("@password", usuario.Password));
+            command.Parameters.Add(new SqliteParameter("@rolusuario", usuario.RolUsuario));
+            command.ExecuteNonQuery();
+
+            command.CommandText = "SELECT MAX(id) FROM Tarea";
+            int idGenerado = Convert.ToInt32(command.ExecuteScalar());
+
+            nuevoUsuario = new Usuario();
+            nuevoUsuario.Id = idGenerado;
+            nuevoUsuario.NombreDeUsuario = usuario.NombreDeUsuario;
+            nuevoUsuario.Password = usuario.Password;
+            nuevoUsuario.RolUsuario = (Rol)usuario.RolUsuario;
+            connection.Close();
+            //NO ANDA
+
         }
+        return nuevoUsuario;
     }
 
     public List<ListarUsuariosViewModel> ListarUsuarios()
