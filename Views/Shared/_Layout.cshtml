@@ -63,6 +63,12 @@
                             </li>
                             
                         }
+                        @if(isAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
+                            </li>
+                        }
                         
                     </ul>
                 </div>

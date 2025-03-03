@@ -77,6 +77,21 @@ public class LoginController:Controller
             
         }
     }
+
+    public IActionResult Logout()
+    {
+        try
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            ViewBag.ErrorMessage = "No se pudo cerrar la sesión";
+            return RedirectToAction("Index");
+        }
+    }
             
            
 }
