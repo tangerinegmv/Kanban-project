@@ -1,28 +1,40 @@
+@model Kanban.ViewModels.CrearUsuarioViewModel
+
 @{
-    ViewData["Title"] = "CrearUsuario";
+    ViewData["Title"] = "Crear Usuario";
 }
 
 <div class="text-center">
-    
     <h1 class="display-4">Crear Usuario</h1>
+</div>
 
-@model Kanban.ViewModels.CrearUsuarioViewModel
-
-<form asp-controller="Usuario" asp-action="CrearUsuario">
+<form asp-controller="Usuario" asp-action="CrearUsuario" method="post">
   <div class="mb-3">
-    <label asp-for=@Model.NombreDeUsuario class="form-label">Nombre de Usuario</label>
-    <input asp-for=@Model.NombreDeUsuario type="text" class="form-control">
-    <label asp-for=@Model.RolUsuario class="form-label">Rol de Usuario</label>
-    <select asp-for=@Model.RolUsuario class="form-select">
+    <section>
+    <label asp-for="NombreDeUsuario" class="form-label">Nombre de Usuario</label>
+    <input asp-for="NombreDeUsuario" type="text" class="form-control">
+    <span asp-validation-for="NombreDeUsuario" class="text-danger"></span>
+    </section>
+
+    <section>
+    <label asp-for="RolUsuario" class="form-label">Rol de Usuario</label>
+    <select asp-for="RolUsuario" class="form-select">
         <option value="0">Administrador</option>
         <option value="1">Operador</option>
     </select>
+    <span asp-validation-for="RolUsuario" class="text-danger"></span>
+    </section>
+
+    <section>
     <label asp-for="Password" class="form-label">Contraseña</label>
     <input asp-for="Password" type="password" class="form-control">
-
+    <span asp-validation-for="Password" class="text-danger"></span>
+    </section>
   </div>    
   <button type="submit" class="btn btn-outline-success">Crear</button>
-   <a asp-action="ListarUsuarios" class="btn btn-secondary">Cancelar</a>
+  <a asp-action="ListarUsuarios" class="btn btn-secondary">Cancelar</a>
 </form>
-</div>
-@section Scripts{<partial name="_ValidationScriptsPartial"/>}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
