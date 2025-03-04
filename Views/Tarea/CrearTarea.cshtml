@@ -1,10 +1,15 @@
-@model Kanban.Tarea
+@model Kanban.ViewModels.CrearTareaViewModel
 
 @{
     ViewData["Title"] = "Crear Tarea";
     int idTablero = (int)ViewData["IdTablero"];
 }
-
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <h1>Crear Tarea</h1>
 
 <form asp-asp-controller="Tarea" asp-action="CrearTarea" method="post">
