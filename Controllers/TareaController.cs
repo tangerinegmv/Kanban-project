@@ -26,7 +26,14 @@ public class TareaController: Controller
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
                 return RedirectToAction("Index", "Login");
             
+            var tablero = _tableroRepository.ObtenerTablero(idTablero);
+            var tareas = _tareaRepository.ListarTareasPorTablero(idTablero);
+
+
             ViewData["idTablero"] = idTablero;
+            ViewData["NombreTablero"] = tablero.Nombre;
+            ViewData["NombrePropietario"] = _usuarioRepository.Detalles(tablero.IdUsuarioPropietario).NombreDeUsuario;
+            ViewData["Tareas"] = tareas;
             return View(new CrearTareaViewModel());
         }
         catch (Exception ex )
@@ -74,10 +81,21 @@ public class TareaController: Controller
     {
         var tablero = _tableroRepository.ObtenerTablero(idTablero);
         var tareas = _tareaRepository.ListarTareasPorTablero(idTablero);
+
+        var tareasViewModel = tareas.Select(t => new ListarTareasViewModel
+    {
+        Id = t.Id,
+        Nombre = t.Nombre,
+        Descripcion = t.Descripcion,
+        Color = t.Color,
+        Estado = t.Estado,
+        IdUsuarioAsignado = t.IdUsuarioAsignado,
+        NombreUsuarioAsignado = t.IdUsuarioAsignado.HasValue ? _usuarioRepository.Detalles(t.IdUsuarioAsignado.Value).NombreDeUsuario : null
+    }).ToList();
         ViewData["IdTablero"] = idTablero;
         ViewData["NombreTablero"] = tablero.Nombre;
         ViewData["IdUsuarioPropietario"] = tablero.IdUsuarioPropietario;
-        return View(tareas);
+        return View(tareasViewModel);
     }
     [HttpGet]
     public IActionResult ListarTareasPorUsuario(int idUsuario)
@@ -156,6 +174,7 @@ public class TareaController: Controller
             tareaModificada.Estado = tarea.Estado;
 
             _tareaRepository.ModificarTarea(id, tareaModificada);
+            ViewData["idTablero"] = tareaExistente.IdTablero;
             return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
         
         }

@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Crear Tarea";
     int idTablero = (int)ViewData["IdTablero"];
+    string nombreTablero = ViewData["NombreTablero"].ToString();
+    string nombrePropietario = ViewData["NombrePropietario"].ToString();
+    var tareas = ViewData["Tareas"] as List<Kanban.ViewModels.ListarTareasViewModel>;
 }
 @if (TempData["ErrorMessage"] != null)
 {
@@ -12,43 +15,67 @@
 }
 <h1>Crear Tarea</h1>
 
-<form asp-asp-controller="Tarea" asp-action="CrearTarea" method="post">
-    <input type="hidden" asp-for="IdTablero" value="@idTablero" />
-    <div class="mb-3">
-        <label asp-for="Nombre" class="form-label">Nombre de la Tarea</label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+<div class="row">
+    <div class="col-md-8">
+        <form asp-controller="Tarea" asp-action="CrearTarea" method="post">
+            <input type="hidden" asp-for="IdTablero" value="@idTablero" />
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label">Nombre de la Tarea</label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Descripcion" class="form-label">Descripción</label>
+                <textarea asp-for="Descripcion" class="form-control"></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Color" class="form-label">Color</label>
+                <select asp-for="Color" class="form-control">
+                    <option value="#ff0000">Rojo</option>
+                    <option value="#00ff00">Verde</option>
+                    <option value="#0000ff">Azul</option>
+                    <option value="#ffff00">Amarillo</option>
+                    <option value="#ff00ff">Magenta</option>
+                </select>
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Estado" class="form-label">Estado</label>
+                <select asp-for="Estado" class="form-control">
+                    <option value="1">Ideas</option>
+                    <option value="2">To Do</option>
+                    <option value="3">Doing</option>
+                    <option value="4">Review</option>
+                    <option value="5">Done</option>
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear</button>
+            <a asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@idTablero" class="btn btn-secondary">Cancelar</a>
+        </form>
     </div>
-    <div class="mb-3">
-        <label asp-for="Descripcion" class="form-label">Descripción</label>
-        <textarea asp-for="Descripcion" class="form-control"></textarea>
-        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                Información del Tablero
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@nombreTablero</h5>
+                <p class="card-text"><strong>Propietario:</strong> @nombrePropietario</p>
+                <h6>Otras Tareas:</h6>
+                <ul class="list-group">
+                    @foreach (var tarea in tareas)
+                    {
+                        <li class="list-group-item" style="background-color:@tarea.Color; color: white;">
+                            @tarea.Nombre - @tarea.Estado
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-       <label asp-for="Color" class="form-label">Color</label>
-       <input asp-for="Color" type="color" value="#ff0000" class="form-control"/>
-
-       <span asp-validation-for="Color" class="text-danger"></span>
-    
-
-    </div>
-    <div class="mb-3">
-        <label asp-for="Estado" class="form-label">Estado</label>
-        <select asp-for="Estado" class="form-control">
-            <option value="1">Ideas</option>
-            <option value="2">To Do</option>
-            <option value="3">Doing</option>
-            <option value="4">Review</option>
-            <option value="5">Done</option>
-
-        </select>
-        <span asp-validation-for="Estado" class="text-danger"></span>
-    </div>
-   
-  
-    <button type="submit" class="btn btn-primary">Crear</button>
-    <a asp-controller="Tablero" asp-action="Listar" class="btn btn-secondary">Cancelar</a>
-</form>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -44,3 +44,8 @@ body {
   background-color: #4b4b4b;
   border-color: #4b4b4b;
 }
+
+.dark-theme .bg-light {
+  background-color: #4b4b4b !important;
+  color: #ffffff !important;
+}

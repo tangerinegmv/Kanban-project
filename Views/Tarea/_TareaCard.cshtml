@@ -3,7 +3,7 @@
 
 @{
     int idUsuario = HttpContextAccessor.HttpContext.Session.GetInt32("Id").Value;
-    string propietario = ViewData["IdUsuarioPropietario"].ToString();
+    int idUsuarioPropietario = (int)ViewData["IdUsuarioPropietario"];
 }
 
 <div class="card mb-2 shadow-sm" style="background-color:@Model.Color; color: white;">
@@ -11,11 +11,21 @@
         <h5 class="card-title">@Model.Nombre</h5>
         <p class="card-text">@Model.Descripcion</p>
 
-        @if (Model.IdUsuarioAsignado == idUsuario || propietario == idUsuario.ToString())
+        @if (Model.IdUsuarioAsignado == idUsuario || idUsuarioPropietario == idUsuario)
         {
             <a asp-controller="Tarea" asp-action="ModificarTarea" asp-route-id="@Model.Id" class="btn btn-light btn-sm">Modificar</a>
             <a asp-controller="Tarea" asp-action="EliminarTarea" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">Eliminar</a>
-            <a asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@Model.Id" class="btn btn-warning btn-sm">Asignar</a>
+            @if (idUsuarioPropietario == idUsuario)
+            {
+                @if(Model.IdUsuarioAsignado.HasValue)
+                {
+                    <span class="badge bg-info text-dark">Asignado a: @Model.NombreUsuarioAsignado</span>
+                }
+                else
+                {
+                    <a asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@Model.Id" class="btn btn-warning btn-sm">Asignar Usuario</a>
+                }
+            }
         }
         else
         {

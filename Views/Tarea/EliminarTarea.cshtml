@@ -28,6 +28,6 @@
     <form asp-controller="Tarea" asp-action="EliminarTarea" method="post">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-controller="Tablero" asp-action="Listar" class="btn btn-secondary">Cancelar</a>
+        <a asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@Model.IdTablero" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>

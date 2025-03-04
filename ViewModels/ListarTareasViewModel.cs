@@ -19,5 +19,6 @@ public class ListarTareasViewModel
     public EstadoTarea Estado { get; set; }
     public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
     public int Id { get => id; set => id = value; }
+    public string? NombreUsuarioAsignado { get; internal set; }
     //public int IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
 }

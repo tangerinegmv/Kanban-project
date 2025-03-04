@@ -34,13 +34,13 @@
     }
 }
 
-<div class="container">
-    <div class="row">
+<div class="container-fluid">
+    <div class="row d-flex justify-content-around">
         <!-- 🧠 Ideas -->
-        <div class="col-md-2">
+        <div class="col-12 col-md-2 d-flex flex-column">
             <h4 class="text-center bg-secondary text-white p-2">🧠 Ideas</h4>
-            <div class="kanban-column">
-                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Ideas)) // Estado = 1
+            <div class="kanban-column flex-grow-1">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Ideas))
                 {
                     <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
                 }
@@ -48,10 +48,10 @@
         </div>
 
         <!-- 📝 To Do -->
-        <div class="col-md-2">
-            <h4 class="text-center bg-light p-2">📝 To Do</h4>
-            <div class="kanban-column">
-                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.ToDo)) // Estado = 2
+        <div class="col-12 col-md-2 d-flex flex-column">
+            <h4 class="text-center bg-light text-dark p-2">📝 To Do</h4>
+            <div class="kanban-column flex-grow-1">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.ToDo))
                 {
                     <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
                 }
@@ -59,10 +59,10 @@
         </div>
 
         <!-- 🚀 Doing -->
-        <div class="col-md-2">
+        <div class="col-12 col-md-2 d-flex flex-column">
             <h4 class="text-center bg-primary text-white p-2">🚀 Doing</h4>
-            <div class="kanban-column">
-                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Doing)) // Estado = 3
+            <div class="kanban-column flex-grow-1">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Doing))
                 {
                     <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
                 }
@@ -70,10 +70,10 @@
         </div>
 
         <!-- 🔍 Review -->
-        <div class="col-md-2">
+        <div class="col-12 col-md-2 d-flex flex-column">
             <h4 class="text-center bg-warning text-dark p-2">🔍 Review</h4>
-            <div class="kanban-column">
-                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Review)) // Estado = 4
+            <div class="kanban-column flex-grow-1">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Review))
                 {
                     <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
                 }
@@ -81,10 +81,10 @@
         </div>
 
         <!-- ✅ Done -->
-        <div class="col-md-2">
+        <div class="col-12 col-md-2 d-flex flex-column">
             <h4 class="text-center bg-success text-white p-2">✅ Done</h4>
-            <div class="kanban-column">
-                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Done)) // Estado = 5
+            <div class="kanban-column flex-grow-1">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Done))
                 {
                     <partial name="_TareaCard" model="tarea" view-data='@ViewData' />
                 }
@@ -101,10 +101,21 @@
 @section Styles {
     <style>
         .kanban-column {
-            min-height: 250px;
+            min-height: 300px;
             padding: 10px;
             background-color: rgba(240, 240, 240, 0.8);
             border-radius: 8px;
+            overflow-y: auto; /* Agrega scroll si hay muchas tareas */
+        
+        }
+        .card-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dark-theme .bg-light {
+            background-color: #4b4b4b !important;
+            color: #ffffff !important;
         }
     </style>
 }
