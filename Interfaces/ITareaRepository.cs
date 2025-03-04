@@ -8,5 +8,6 @@ public interface ITareaRepository
     public Tarea Detalles(int id);
     public void ModificarTarea(int id, Tarea tarea);
     public void EliminarTarea(int id);
+    void AsignarUsuario(int idTarea, int idUsuario);
     
 }

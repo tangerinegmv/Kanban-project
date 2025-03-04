@@ -30,9 +30,17 @@ public class TableroController : Controller
         List<ListarTablerosViewModel> tablerosAsignados = _tableroRepository.ObtenerPorUsuarioAsignado(idUsuario);
 
         // Unir ambas listas sin duplicados
-        var tableros = tablerosPropios.Union(tablerosAsignados).ToList();
-
+        var tableros = tablerosPropios
+            .Concat(tablerosAsignados)
+            .GroupBy(t => t.Id)
+            .Select(g => g.First())
+            .ToList();
         return View(tableros);
+    }
+
+    public IActionResult ListarTablerosPorUsuario(int idUsuario)
+    {
+        return View(_tableroRepository.ListarTablerosPorUsuario(idUsuario));
     }
 
     private int ObtenerUsuarioLogueado()
@@ -43,13 +51,58 @@ public class TableroController : Controller
     [HttpGet]
     public IActionResult CrearTablero()
     {
-        return View(new Tablero());
+        try
+        {
+            if (HttpContext.Session.GetString("IsAuthenticated") != null)
+            {
+                return View(new CrearTableroViewModel());
+            }
+            else
+            {
+                return RedirectToAction("Listar", "Tablero");
+            }
+            
+        }
+        catch (Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo cargar el formulario de creación de tablero";
+            return RedirectToAction("Listar");
+        }
     }
     [HttpPost]
-    public IActionResult CrearTablero(Tablero tablero)
+    public IActionResult CrearTablero(CrearTableroViewModel tablero)
     {
-        Tablero nuevo = _tableroRepository.CrearTablero(tablero);
-        return RedirectToAction("Index");
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                 _logger.LogError("Datos inválidos para la creación del tablero.");
+                ViewBag.ErrorMessage = "Datos inválidos.";
+                return View(tablero);
+            }
+            int? idUsuario = ObtenerUsuarioLogueado();
+            if (idUsuario == null)
+            {
+                _logger.LogWarning("Intento de crear un tablero sin usuario logueado.");
+                TempData["ErrorMessage"] = "Debes iniciar sesión para crear un tablero.";
+                return RedirectToAction("Index", "Login");
+            }
+            var tableroNuevo = new Tablero();
+            tableroNuevo.IdUsuarioPropietario = idUsuario.Value;
+            tableroNuevo.Nombre = tablero.Nombre;
+            tableroNuevo.Descripcion = tablero.Descripcion;
+            Tablero nuevo = _tableroRepository.CrearTablero(tableroNuevo);
+            return RedirectToAction("Listar");
+        }
+        catch (Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo crear el tablero";
+            return RedirectToAction("Listar");
+        }
     }
 
     [HttpGet]

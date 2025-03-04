@@ -5,12 +5,13 @@ public class TableroRepository: ITableroRepository
 {
     //private const string cadenaConexion = @"Data Source=Kanban.db";
     private readonly string _connectionString;
-
+    
     public TableroRepository(string connectionString)
     {
         _connectionString = connectionString;
+       
     }
-
+    
     public Tablero CrearTablero(Tablero tablero)
     {
         Tablero? nuevo = null;
@@ -24,7 +25,7 @@ public class TableroRepository: ITableroRepository
             {
                 command.Parameters.Add(new SqliteParameter("@id_usuario_propietario", tablero.IdUsuarioPropietario));
                 command.Parameters.Add(new SqliteParameter("@nombre", tablero.Nombre));
-                command.Parameters.Add(new SqliteParameter("@descripcion", tablero.Descripcion));
+                command.Parameters.Add(new SqliteParameter("@descripcion", string.IsNullOrEmpty(tablero.Descripcion) ? DBNull.Value : tablero.Descripcion));
                 int idGenerado = Convert.ToInt32(command.ExecuteScalar());
                 nuevo = new Tablero();
                 nuevo.Id = idGenerado;

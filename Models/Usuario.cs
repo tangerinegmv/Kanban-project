@@ -1,3 +1,5 @@
+using Kanban.ViewModels;
+
 namespace Kanban
 {
     public enum Rol
@@ -11,6 +13,13 @@ namespace Kanban
         private string nombreDeUsuario;
         private string password;
         private Rol rolUsuario;
+     
+
+        public Usuario()
+        {
+        }
+
+
         public Rol RolUsuario { get => rolUsuario; set => rolUsuario = value; }
 
         public int Id { get => id; set => id = value; }

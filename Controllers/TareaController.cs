@@ -6,12 +6,13 @@ using tl2_proyecto_2024_tangerinegmv.Controllers;
 public class TareaController: Controller
 {
     private readonly ILogger<TareaController> _logger;
-    //private TareaRepository tareaRepository = new TareaRepository();
+    private readonly IUsuarioRepository _usuarioRepository;
     private readonly ITareaRepository _tareaRepository;
-    public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository)
+    public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository, IUsuarioRepository usuarioRepository)
     {
         _tareaRepository = tareaRepository;
         _logger = logger;
+        _usuarioRepository = usuarioRepository;
     }
    
     [HttpGet]
@@ -88,6 +89,20 @@ public class TareaController: Controller
         }
         _tareaRepository.EliminarTarea(id);
         return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
+    }
+    [HttpGet]
+    public IActionResult Asignar(int idTarea)
+    {
+        var usuarios = _usuarioRepository.ListarUsuarios(); 
+        ViewBag.IdTarea = idTarea;
+        return View(usuarios);
+    }
+
+    [HttpPost]
+    public IActionResult Asignar(int idTarea, int idUsuario)
+    {
+        _tareaRepository.AsignarUsuario(idTarea, idUsuario);
+        return RedirectToAction("Listar","Tablero"); // Redirigir a la lista de tareas
     }
 
 }

@@ -1,24 +1,33 @@
+@model Kanban.ViewModels.CrearTableroViewModel
 @{
     ViewData["Title"] = "CrearTablero";
 }
-
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <div class="text-center">
     
     <h1 class="display-4">Crear Tablero</h1>
 
-@model Kanban.Tablero
 
-<form asp-controller="Tablero" asp-action="CrearTablero">
+<form asp-controller="Tablero" asp-action="CrearTablero" method="post">
   <div class="mb-3">
     <label asp-for=@Model.Nombre class="form-label">Nombre del Tablero</label>
     <input asp-for=@Model.Nombre type="text" class="form-control">
-    <label asp-for=@Model.IdUsuarioPropietario class="form-label">Id del propietario</label>
-    <input asp-for=@Model.IdUsuarioPropietario type="number" class="form-control">
+    <span asp-validation-for="Nombre" class="text-danger"></span>
+  </div>
+  <div class="mb-3">
     <label asp-for=@Model.Descripcion class="form-label">Descripcion</label>
     <input asp-for=@Model.Descripcion type="text" class="form-control">
-
+    <span asp-validation-for="Descripcion" class="text-danger"></span>
   </div>    
   <button type="submit" class="btn btn-outline-success">Crear</button>
-   <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+   <a asp-action="Listar" class="btn btn-secondary">Cancelar</a>
 </form>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

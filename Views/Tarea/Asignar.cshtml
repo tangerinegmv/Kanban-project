@@ -1,0 +1,17 @@
+@model List<Kanban.ViewModels.ListarUsuariosViewModel>
+
+<h2>Asignar Usuario a Tarea</h2>
+
+<form asp-controller="Tarea" asp-action="Asignar" method="post">
+    <input type="hidden" name="idTarea" value="@ViewBag.IdTarea" />
+
+    <label>Selecciona un Usuario:</label>
+    <select name="idUsuario" class="form-control">
+        @foreach (var usuario in Model)
+        {
+            <option value="@usuario.Id">@usuario.NombreDeUsuario</option>
+        }
+    </select>
+
+    <button type="submit" class="btn btn-success mt-3">Asignar</button>
+</form>

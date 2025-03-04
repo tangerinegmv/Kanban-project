@@ -25,14 +25,18 @@
                 <td>
                     <a asp-controller="Tarea" asp-action="ModificarTarea" asp-route-id="@tarea.Id" class="btn btn-primary">Modificar</a>
                     <a asp-controller="Tarea" asp-action="EliminarTarea" asp-route-id="@tarea.Id" class="btn btn-danger">Eliminar</a>
+                
+                    <a asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@tarea.Id" class="btn btn-warning">Asignar Usuario</a>
+        
                 </td>
+                
             </tr>
         }
     </tbody>
 </table>
 
 <div class="text-center">
-    <a asp-controller="Tablero" asp-action="Index" class="btn btn-secondary">Volver a Tableros</a>
+    <a asp-controller="Tablero" asp-action="Listar" class="btn btn-secondary">Volver a Tableros</a>
     <a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-secondary" asp-route-idTablero="@ViewData["IdTablero"]">Agregar Tarea</a>
 
 </div>

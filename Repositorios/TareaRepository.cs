@@ -167,5 +167,21 @@ public class TareaRepository: ITareaRepository
         connection.Close();
     }
 
+    public void AsignarUsuario(int idTarea, int idUsuario)
+    {
+        using SqliteConnection connection = new SqliteConnection(_connectionString);
+        {
+            connection.Open();
+            string query = "UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id = @idTarea";
+
+            using SqliteCommand command = new SqliteCommand(query, connection);
+            {
+                command.Parameters.AddWithValue("@idUsuario", idUsuario);
+                command.Parameters.AddWithValue("@idTarea", idTarea);
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
     
 }
