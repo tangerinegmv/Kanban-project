@@ -15,6 +15,6 @@ public class CrearUsuarioViewModel
     public string Password { get => password; set => password = value; }
 
     [Required]
-    [Range(1, 2, ErrorMessage = "El rol de usuario debe ser 0(Administrador) o 1 (Operador)")]
+    [Range(0, 1, ErrorMessage = "El rol de usuario debe ser 0(Administrador) o 1 (Operador)")]
     public Rol? RolUsuario { get => rolUsuario; set => rolUsuario = value; }
 }

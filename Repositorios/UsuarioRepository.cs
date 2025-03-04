@@ -81,7 +81,7 @@ public class UsuarioRepository: IUsuarioRepository
                     usuario.Id = Convert.ToInt32(reader["id"]);
                     usuario.NombreDeUsuario = reader["nombre_de_usuario"].ToString();
                     usuario.RolUsuario = (Kanban.Rol)Convert.ToInt32(reader["rolusuario"]);
-                        
+                    usuario.Password = reader["password"].ToString();
                     }
                 }
                 connection.Close();
@@ -89,20 +89,31 @@ public class UsuarioRepository: IUsuarioRepository
             }
             return usuario;
         }
-    public void ModificarUsuario(int id, Usuario usuario)
+    public void ModificarUsuario(int id, ModificarUsuarioViewModel usuario)
         {
-            using ( SqliteConnection connection = new SqliteConnection(_connectionString))
-            {
-                var query = "UPDATE Usuario SET nombre_de_usuario = @nombre_de_usuario, rolusuario = @rolusuario WHERE id = @id;";
-                connection.Open();
-                var command = new SqliteCommand(query, connection);
-                command.Parameters.Add(new SqliteParameter("@id", id));
-                command.Parameters.Add(new SqliteParameter("@nombre_de_usuario", usuario.NombreDeUsuario));
-                command.Parameters.Add(new SqliteParameter("@rolusuario", usuario.RolUsuario));
-                command.ExecuteNonQuery();
-                connection.Close();
-            }
-        } 
+        using SqliteConnection connection = new SqliteConnection(_connectionString);
+        var query = @"UPDATE Usuario SET 
+                              nombre_de_usuario = COALESCE(@nombre_de_usuario, nombre_de_usuario), 
+                              rolusuario = COALESCE(@RolUsuario, rolusuario) WHERE id = @id;";
+        connection.Open();
+        var command = new SqliteCommand(query, connection);
+        command.Parameters.AddWithValue("@id", id);
+
+        command.Parameters.AddWithValue("@nombre_de_usuario",
+            string.IsNullOrEmpty(usuario.NombreDeUsuario) ? DBNull.Value : usuario.NombreDeUsuario);
+        // command.Parameters.AddWithValue("@Password",
+        //     string.IsNullOrEmpty(usuario.Password) ? DBNull.Value : usuario.Password);
+        command.Parameters.AddWithValue("@RolUsuario",
+            usuario.RolUsuario.HasValue ? (object)usuario.RolUsuario : DBNull.Value);
+
+        int filasAfectadas = command.ExecuteNonQuery();
+
+        if (filasAfectadas == 0) // si no hay filas afectadas es porque no se modificó
+        {
+            throw new Exception("No se pudo modificar el usuario.");
+        }
+        connection.Close();
+    } 
     public void EliminarUsuario(int id)
     {
         if (!Verifica(id))

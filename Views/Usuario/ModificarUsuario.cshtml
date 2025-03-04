@@ -1,19 +1,39 @@
 @{
-    ViewData["Title"] = "ModificarUsuario";
+    ViewData["Title"] = "Modificar Usuario";
 }
+@if (ViewBag.ErrorMessage != null)
+{
+        <div class="error-message">
+            <p>@ViewBag.ErrorMessage</p>
+        </div>
+}
+@model Kanban.ViewModels.ModificarUsuarioViewModel
 
-@model Kanban.Usuario
-
-<form asp-controller="Usuario" asp-action="ModificarUsuario">
+<form asp-controller="Usuario" asp-action="ModificarUsuario" method="post">
   <div class="mb-3">
+    <section>
     <label asp-for=@Model.NombreDeUsuario class="form-label">Nombre de usuario</label>
     <input asp-for=@Model.NombreDeUsuario type="text" class="form-control">
+    <span asp-validation-for="NombreDeUsuario" class="text-danger"></span>
+    </section>
+    <section>
     <label asp-for=@Model.RolUsuario class="form-label">Rol del usuario</label>
     <select asp-for=@Model.RolUsuario class="form-select">
         <option value="0">Administrador</option>
         <option value="1">Operador</option>
     </select>
+    <span asp-validation-for="RolUsuario" class="text-danger"></span>
+    </section>
+    @* <section>
+    <label asp-for="@Model.Password" class="form-label">Contraseña</label>
+    <input asp-for="@Model.Password" type="password" class="form-control">
+    <span asp-validation-for="Password" class="text-danger"></span>
+    </section> *@
   </div>    
   <button type="submit" class="btn btn-outline-success">Modificar</button>
-   <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+   <a asp-action="ListarUsuarios" class="btn btn-secondary">Cancelar</a>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

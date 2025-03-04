@@ -3,6 +3,7 @@ using Kanban;
 using Kanban.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using tl2_proyecto_2024_tangerinegmv.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 public class UsuarioController : Controller
 {
@@ -76,13 +77,54 @@ public class UsuarioController : Controller
     [HttpGet]
     public IActionResult ModificarUsuario(int id)
     {
-        return View(_usuarioRepository.Detalles(id));
+        try
+        {
+            if (HttpContext.Session.GetString("IsAuthenticated") != null &&
+                HttpContext.Session.GetString("Rol") == Rol.Administrador.ToString())
+            {
+                Usuario usuario = _usuarioRepository.Detalles(id);
+                ModificarUsuarioViewModel modificarUsuario = new ModificarUsuarioViewModel();
+                modificarUsuario.NombreDeUsuario = usuario.NombreDeUsuario;
+                modificarUsuario.RolUsuario = usuario.RolUsuario;
+                //modificarUsuario.Password = usuario.Password;
+                return View(modificarUsuario);
+            }else{
+                return RedirectToAction("ListarUsuarios", "Usuario");
+            }
+            
+        }
+        catch (System.Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            ViewBag.ErrorMessage = "Error al cargar el formulario para modificar producto";
+            return View("ListarUsuarios");
+        }
+        
     }
     [HttpPost]
-    public IActionResult ModificarUsuario(int id, Usuario usuario)
+    public IActionResult ModificarUsuario(int id, ModificarUsuarioViewModel usuario)
     {
-        _usuarioRepository.ModificarUsuario(id, usuario);
-        return RedirectToAction("Index");
+        try
+        {
+            if (!ModelState.IsValid)    
+            {
+                _logger.LogError("Credenciales invalidas.");
+                ViewBag.ErrorMessage = "Credenciales invalidas.";
+                return View(usuario);
+            }
+            _usuarioRepository.ModificarUsuario(id, usuario);
+            return RedirectToAction("ListarUsuarios");
+
+        }
+        catch (Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            ViewBag.ErrorMessage = "No se pudo modificar el usuario";
+            return View("ListarUsuarios");
+        }
+        
     }
     
     [HttpGet]   
@@ -106,6 +148,6 @@ public class UsuarioController : Controller
     public IActionResult CambiarPassword(int id, Usuario usuario)
     {
         _usuarioRepository.CambiarPassword(id, usuario);
-        return RedirectToAction("Index");
+        return RedirectToAction("ListarUsuarios");
     }
 }
