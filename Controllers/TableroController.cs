@@ -2,6 +2,7 @@ using SQLitePCL;
 using Kanban;
 using Microsoft.AspNetCore.Mvc;
 using tl2_proyecto_2024_tangerinegmv.Controllers;
+using Kanban.ViewModels;
 
 public class TableroController : Controller
 {
@@ -15,21 +16,29 @@ public class TableroController : Controller
     }
    
 
-    public IActionResult Index()
+    // public IActionResult Index()
+    // {
+    //     return View(_tableroRepository.ListarTableros());
+    // }
+
+   //[HttpGet]
+    public IActionResult Listar()
     {
-        return View(_tableroRepository.ListarTableros());
+        int idUsuario = ObtenerUsuarioLogueado(); // Método para obtener el ID del usuario logueado
+
+        List<ListarTablerosViewModel> tablerosPropios = _tableroRepository.ListarTablerosPorUsuario(idUsuario);
+        List<ListarTablerosViewModel> tablerosAsignados = _tableroRepository.ObtenerPorUsuarioAsignado(idUsuario);
+
+        // Unir ambas listas sin duplicados
+        var tableros = tablerosPropios.Union(tablerosAsignados).ToList();
+
+        return View(tableros);
     }
 
-   [HttpGet]
-    public IActionResult ListarTablerosPorUsuario(int idUsuario)
+    private int ObtenerUsuarioLogueado()
     {
-        var tableros = _tableroRepository.ListarTablerosPorUsuario(idUsuario);
-         if (tableros == null)
-            {
-                return NotFound();
-            }
-            return View(tableros);
-    }
+        return (int)HttpContext.Session.GetInt32("Id");   
+  }
 
     [HttpGet]
     public IActionResult CrearTablero()

@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Kanban;
+using Kanban.ViewModels;
 public class TableroRepository: ITableroRepository
 {
     //private const string cadenaConexion = @"Data Source=Kanban.db";
@@ -36,9 +37,9 @@ public class TableroRepository: ITableroRepository
         }
         return nuevo;
     }
-    public List<Tablero> ListarTableros()
+    public List<ListarTablerosViewModel> ListarTableros()
     {
-        List<Tablero> listaTablero = new List<Tablero>();
+        List<ListarTablerosViewModel> listaTablero = new List<ListarTablerosViewModel>();
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             string query = "SELECT * FROM Tablero;";
@@ -48,7 +49,7 @@ public class TableroRepository: ITableroRepository
             {
                 while (reader.Read())
                 {
-                    var tablero = new Tablero();
+                    var tablero = new ListarTablerosViewModel();
                     tablero.Id= Convert.ToInt32(reader["id"]);
                     tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
                     tablero.Nombre= reader["nombre"].ToString();
@@ -62,9 +63,9 @@ public class TableroRepository: ITableroRepository
         return listaTablero;
     }
 
-     public List<Tablero> ListarTablerosPorUsuario(int idUsuario)
+     public List<ListarTablerosViewModel> ListarTablerosPorUsuario(int idUsuario)
         {
-            List<Tablero> listaTablero = new List<Tablero>();
+            List<ListarTablerosViewModel> listaTablero = new List<ListarTablerosViewModel>();
             using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
                 string query = "SELECT * FROM Tablero WHERE id_usuario_propietario = @id_usuario_propietario;";
@@ -75,7 +76,7 @@ public class TableroRepository: ITableroRepository
                 {
                     while (reader.Read())
                     {
-                    var tablero = new Tablero();
+                    var tablero = new ListarTablerosViewModel();
                     tablero.Id= Convert.ToInt32(reader["id"]);
                     tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
                     tablero.Nombre= reader["nombre"].ToString();
@@ -87,6 +88,35 @@ public class TableroRepository: ITableroRepository
             }
             return listaTablero;
         }
+        public List<ListarTablerosViewModel> ObtenerPorUsuarioAsignado(int idUsuario)
+    {
+        List<ListarTablerosViewModel> listaTablero = new List<ListarTablerosViewModel>();
+            using (SqliteConnection connection = new SqliteConnection(_connectionString))
+            {
+                string query = @"
+                SELECT DISTINCT t.id, t.id_usuario_propietario, t.nombre, t.descripcion
+                FROM Tablero t
+                INNER JOIN Tarea ta ON ta.id_tablero = t.id
+                WHERE ta.id_usuario_asignado = @idUsuario";
+                SqliteCommand command = new SqliteCommand(query, connection);
+                command.Parameters.Add(new SqliteParameter("@idUsuario", idUsuario));
+                connection.Open();
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                    var tablero = new ListarTablerosViewModel();
+                    tablero.Id= Convert.ToInt32(reader["id"]);
+                    tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
+                    tablero.Nombre= reader["nombre"].ToString();
+                    tablero.Descripcion=reader["descripcion"].ToString();
+                        listaTablero.Add(tablero);
+                    }
+                }
+                connection.Close();
+            }
+            return listaTablero;
+    }
     public Tablero ObtenerTablero(int id)
     {
         var tablero = new Tablero();

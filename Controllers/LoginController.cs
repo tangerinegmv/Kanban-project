@@ -29,7 +29,7 @@ public class LoginController:Controller
             }
             else
             {
-                return RedirectToAction("Index", "Tablero");
+                return RedirectToAction("Listar", "Tablero");
             }
             
         }
@@ -65,7 +65,7 @@ public class LoginController:Controller
             HttpContext.Session.SetString("Rol", usuario.RolUsuario.ToString());
             HttpContext.Session.SetInt32("Id", usuario.Id);
             _logger.LogInformation("El usuario " + usuario.NombreDeUsuario + " ha iniciado sesión.");
-            return RedirectToAction("Index", "Tablero");
+            return RedirectToAction("Listar", "Tablero");
         
         }
         catch (Exception ex)

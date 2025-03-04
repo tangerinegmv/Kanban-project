@@ -5,7 +5,7 @@
     var username = string.Empty;
     string rol = HttpContextAccessor.HttpContext.Session.GetString("Rol");
     string admin = Rol.Administrador.ToString();
-
+    //int idUsuario = HttpContextAccessor.HttpContext.Session.GetInt32("Id").Value;
     if (HttpContextAccessor.HttpContext.Session.GetString("IsAuthenticated") == "true")
     {
         isAuthenticated = true;
@@ -50,25 +50,20 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="CerrarSesion">Cerrar Sesión</a>
-                            </li>
+                            
 
                             <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tablero" asp-action="Index">Tableros</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Tablero" asp-action="Listar">Tableros</a>
                             </li>
                            
                             <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="ListarUsuarios">Usuarios</a>
                             </li>
-                            
-                        }
-                        @if(isAuthenticated == true)
-                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="CerrarSesion">Cerrar Sesión</a>
                             </li>
                         }
+                       
                         
                     </ul>
                 </div>
