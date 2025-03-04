@@ -98,24 +98,61 @@ public class TareaController: Controller
     public IActionResult ModificarTarea(int id)
     {
         
-        var tarea = _tareaRepository.Detalles(id);
-        return View(tarea);
+        try
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+                return RedirectToAction("Index", "Login");
+
+            var tarea = _tareaRepository.Detalles(id);
+            ModificarTareaViewModel modificarTarea = new ModificarTareaViewModel();
+            modificarTarea.Nombre = tarea.Nombre;
+            modificarTarea.Descripcion = tarea.Descripcion;
+            modificarTarea.Color = tarea.Color;
+            modificarTarea.Estado = tarea.Estado;
+            return View(modificarTarea);
+        }
+        catch (System.Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo cargar la vista de modificación de tarea";
+            return RedirectToAction("Listar","Tablero");
+        }
     }
     [HttpPost]
-    public IActionResult ModificarTarea(int id, Tarea tarea)
+    public IActionResult ModificarTarea(int id, ModificarTareaViewModel tarea)
     {
-        var tareaExistente = _tareaRepository.Detalles(id);
-        
-        if (tareaExistente == null)
+        try
         {
-            return NotFound(); 
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Datos inválidos para la modificación de la tarea.");
+                ViewBag.ErrorMessage = "Datos inválidos.";
+                return View(tarea);
+            }
+
+            var tareaExistente = _tareaRepository.Detalles(id);
+            if (tareaExistente == null)
+            {
+                return NotFound();
+            }
+            
+            Tarea tareaModificada = new Tarea();
+            tareaModificada.Nombre = tarea.Nombre;  
+            tareaModificada.Descripcion = tarea.Descripcion;
+            tareaModificada.Color = tarea.Color;
+            tareaModificada.Estado = tarea.Estado;
+            _tareaRepository.ModificarTarea(id, tareaModificada);
+            return RedirectToAction("Listar","Tablero");
         }
-
-        tarea.IdTablero = tareaExistente.IdTablero;
-
-        _tareaRepository.ModificarTarea(id, tarea);
-
-        return RedirectToAction("ListarTareasPorTablero", new { idTablero = tarea.IdTablero });
+        catch (System.Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo modificar la tarea";
+            return RedirectToAction("Listar","Tablero");
+        }
+        
     }
 
     [HttpGet]
