@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Kanban;
+using Kanban.ViewModels;
 public class TareaRepository: ITareaRepository
 {
     //private const string cadenaConexion = @"Data Source=Kanban.db";
@@ -49,9 +50,9 @@ public class TareaRepository: ITareaRepository
         }
         return nueva;
     }
-    public List<Tarea> ListarTareasPorTablero(int idTablero)
+    public List<ListarTareasViewModel> ListarTareasPorTablero(int idTablero)
     {
-        List<Tarea> listaTarea = [];
+        List<ListarTareasViewModel> listaTarea = [];
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             string query = "SELECT * FROM Tarea WHERE id_tablero = @id_tablero;";
@@ -62,7 +63,7 @@ public class TareaRepository: ITareaRepository
             {
                 while (reader.Read())
                 {
-                    var tarea = new Tarea();
+                    var tarea = new ListarTareasViewModel();
                     tarea.Id = Convert.ToInt32(reader["id"]);
                     tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
                     tarea.Nombre = reader["nombre"].ToString();
