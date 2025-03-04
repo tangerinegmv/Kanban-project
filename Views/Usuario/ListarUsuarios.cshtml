@@ -1,22 +1,28 @@
 @using Kanban
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
-
     string rol = HttpContextAccessor.HttpContext.Session.GetString("Rol");
     string admin = Rol.Administrador.ToString();
 }
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+@* @if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+} *@
 @{
     ViewData["Title"] = "Usuarios";
 }
 
-@if (ViewBag.ErrorMessage != null)
-{
-        <div class="error-message">
-            <p>@ViewBag.ErrorMessage</p>
-        </div>
-}
 
-@model List<Kanban.ViewModels.ListarUsuariosViewModel> 
+
+@model List<Kanban.ViewModels.ListarUsuariosViewModel>
 
 <div class="text-center">
     <h1 class="display-4">Listado de usuarios</h1>
@@ -26,11 +32,12 @@
     <tr>
       <th scope="col">Nombre de Usuario</th>
       <th scope="col">Rol</th>
-      <th></th>
-      <th></th>
+      <th scope=" col"></th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
+    
     @foreach(var usuario in Model)
     {
         <tr>
@@ -44,12 +51,13 @@
             <td><button type="button" class="btn btn-danger"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-id="@usuario.Id">Eliminar</a></button></td>
             }        
         </tr>
+    
     }
   </tbody>
 </table>
 @if(rol == admin)
 {
 <div class="text-center">
-    <button type="button" class="btn btn-success"><a   class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="CrearUsuario">Crear usuario</a></button>
+    <button type="button" class="btn btn-success"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="CrearUsuario">Crear usuario</a></button>
 </div>
 }

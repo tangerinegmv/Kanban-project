@@ -101,8 +101,6 @@ public class UsuarioRepository: IUsuarioRepository
 
         command.Parameters.AddWithValue("@nombre_de_usuario",
             string.IsNullOrEmpty(usuario.NombreDeUsuario) ? DBNull.Value : usuario.NombreDeUsuario);
-        // command.Parameters.AddWithValue("@Password",
-        //     string.IsNullOrEmpty(usuario.Password) ? DBNull.Value : usuario.Password);
         command.Parameters.AddWithValue("@RolUsuario",
             usuario.RolUsuario.HasValue ? (object)usuario.RolUsuario : DBNull.Value);
 
@@ -119,6 +117,7 @@ public class UsuarioRepository: IUsuarioRepository
         if (!Verifica(id))
         {
             throw new InvalidOperationException("El usuario está asociado a tableros o tareas y no puede ser eliminado.");
+            
         }
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {

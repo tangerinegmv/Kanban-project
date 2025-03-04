@@ -1,39 +1,43 @@
-using SQLitePCL;
 using Kanban;
 using Kanban.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using tl2_proyecto_2024_tangerinegmv.Controllers;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 
 public class UsuarioController : Controller
 {
     private readonly ILogger<UsuarioController> _logger;
-    //private _usuarioRepository usuarioRepository = new UsuarioRepository();
     private readonly IUsuarioRepository _usuarioRepository;
-
 
     public UsuarioController(IUsuarioRepository usuarioRepository, ILogger<UsuarioController> logger)
     {
         _usuarioRepository = usuarioRepository;
         _logger = logger;
     }
-   
 
-    public IActionResult ListarUsuarios() 
+    public IActionResult ListarUsuarios()
     {
         try
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated"))) return RedirectToAction ("Index", "Login");
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+                return RedirectToAction("Index", "Login");
+
             List<ListarUsuariosViewModel> usuarios = _usuarioRepository.ListarUsuarios();
+            if (TempData["ErrorMessage"] != null)
+            {
+                ViewBag.ErrorMessage = TempData["ErrorMessage"].ToString();
+            }
             return View(usuarios);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.ToString());
-            ViewBag.ErrorMessage = "No se pudo cargar la lista de clientes";
+            ViewBag.ErrorMessage = "No se pudo cargar la lista de usuarios";
             return View(new List<ListarUsuariosViewModel>());
         }
     }
+
     [HttpGet]
     public IActionResult CrearUsuario()
     {
@@ -43,17 +47,20 @@ public class UsuarioController : Controller
                 HttpContext.Session.GetString("Rol") == Rol.Administrador.ToString())
             {
                 return View(new CrearUsuarioViewModel());
-            }else{
+            }
+            else
+            {
                 return RedirectToAction("ListarTableros", "Tablero");
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.ToString());
-            ViewBag.ErrorMessage = "No se pudo cargar el formulario de creación de usuario";
-            return View(ListarUsuarios());
+            TempData["ErrorMessage"] = "No se pudo cargar el formulario de creación de usuario";
+            return RedirectToAction("ListarUsuarios");
         }
     }
+
     [HttpPost]
     public IActionResult CrearUsuario(CrearUsuarioViewModel usuario)
     {
@@ -61,7 +68,9 @@ public class UsuarioController : Controller
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("ListarUsuarios");
+                _logger.LogError("Datos inválidos para la creación de usuario.");
+                ViewBag.ErrorMessage = "Datos inválidos.";
+                return View(usuario);
             }
             Usuario nuevo = _usuarioRepository.CrearUsuario(usuario);
             return RedirectToAction("ListarUsuarios");
@@ -69,8 +78,8 @@ public class UsuarioController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex.ToString());
-            ViewBag.ErrorMessage = "No se pudo crear el usuario";
-            return View("ListarUsuarios");
+            TempData["ErrorMessage"] = "No se pudo crear el usuario";
+            return RedirectToAction("ListarUsuarios");
         }
     }
 
@@ -83,60 +92,98 @@ public class UsuarioController : Controller
                 HttpContext.Session.GetString("Rol") == Rol.Administrador.ToString())
             {
                 Usuario usuario = _usuarioRepository.Detalles(id);
-                ModificarUsuarioViewModel modificarUsuario = new ModificarUsuarioViewModel();
-                modificarUsuario.NombreDeUsuario = usuario.NombreDeUsuario;
-                modificarUsuario.RolUsuario = usuario.RolUsuario;
-                //modificarUsuario.Password = usuario.Password;
+                ModificarUsuarioViewModel modificarUsuario = new ModificarUsuarioViewModel
+                {
+                    NombreDeUsuario = usuario.NombreDeUsuario,
+                    RolUsuario = usuario.RolUsuario
+                };
                 return View(modificarUsuario);
-            }else{
-                return RedirectToAction("ListarUsuarios", "Usuario");
             }
-            
+            else
+            {
+                return RedirectToAction("ListarUsuarios");
+            }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            
             _logger.LogError(ex.ToString());
-            ViewBag.ErrorMessage = "Error al cargar el formulario para modificar producto";
-            return View("ListarUsuarios");
+            TempData["ErrorMessage"] = "Error al cargar el formulario para modificar usuario";
+            return RedirectToAction("ListarUsuarios");
         }
-        
     }
+
     [HttpPost]
     public IActionResult ModificarUsuario(int id, ModificarUsuarioViewModel usuario)
     {
         try
         {
-            if (!ModelState.IsValid)    
+            if (!ModelState.IsValid)
             {
-                _logger.LogError("Credenciales invalidas.");
-                ViewBag.ErrorMessage = "Credenciales invalidas.";
+                _logger.LogError("Credenciales inválidas.");
+                ViewBag.ErrorMessage = "Credenciales inválidas.";
                 return View(usuario);
             }
             _usuarioRepository.ModificarUsuario(id, usuario);
             return RedirectToAction("ListarUsuarios");
-
         }
         catch (Exception ex)
         {
-            
             _logger.LogError(ex.ToString());
-            ViewBag.ErrorMessage = "No se pudo modificar el usuario";
-            return View("ListarUsuarios");
+            TempData["ErrorMessage"] = "No se pudo modificar el usuario";
+            return RedirectToAction("ListarUsuarios");
         }
-        
     }
-    
-    [HttpGet]   
+
+    [HttpGet]
     public IActionResult EliminarUsuario(int id)
     {
-        return View(_usuarioRepository.Detalles(id));
+        try
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+                return RedirectToAction("Index", "Login");
+
+            if (HttpContext.Session.GetString("Rol") != Rol.Administrador.ToString())
+            {
+                return RedirectToAction("ListarUsuarios");
+            }
+
+            Usuario usuario = _usuarioRepository.Detalles(id);
+            if (usuario == null)
+            {
+                _logger.LogError($"Usuario con ID {id} no encontrado.");
+                TempData["ErrorMessage"] = "Usuario no encontrado.";
+                return RedirectToAction("ListarUsuarios");
+            }
+            return View(usuario);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "Error al cargar el formulario para eliminar usuario";
+            return RedirectToAction("ListarUsuarios");
+        }
     }
+
     [HttpPost]
     public IActionResult EliminarUsuario(Usuario usuario)
     {
-        _usuarioRepository.EliminarUsuario(usuario.Id);
-        return RedirectToAction("Index");
+        try
+        {
+            _usuarioRepository.EliminarUsuario(usuario.Id);
+            return RedirectToAction("ListarUsuarios");
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = ex.Message;
+            return RedirectToAction("ListarUsuarios");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo eliminar el usuario";
+            return RedirectToAction("ListarUsuarios");
+        }
     }
 
     [HttpGet]
@@ -144,6 +191,7 @@ public class UsuarioController : Controller
     {
         return View(_usuarioRepository.Detalles(id));
     }
+
     [HttpPost]
     public IActionResult CambiarPassword(int id, Usuario usuario)
     {

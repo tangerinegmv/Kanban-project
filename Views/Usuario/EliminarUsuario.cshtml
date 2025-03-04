@@ -4,17 +4,32 @@
 
 @model Kanban.Usuario
 
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
 <h1>Eliminar Usuario</h1>
 
-<h3>¿Estás seguro de que deseas eliminar este usuario?</h3>
-<div>
-    <h4>@Model.NombreDeUsuario</h4>
-    <p><strong>ID:</strong> @Model.Id</p>
-    <p><strong>Rol:</strong> @Model.RolUsuario</p>
-</div>
+@if (Model != null)
+{
+    <h3>¿Estás seguro de que deseas eliminar este usuario?</h3>
+    <div>
+        <h4>@Model.NombreDeUsuario</h4>
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p><strong>Rol:</strong> @Model.RolUsuario</p>
+    </div>
 
-<form asp-action="EliminarUsuario" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Eliminar</button>
-    <a asp-action="ListarUsuarios" class="btn btn-secondary">Cancelar</a>
-</form>
+    <form asp-action="EliminarUsuario" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a asp-action="ListarUsuarios" class="btn btn-secondary">Cancelar</a>
+    </form>
+}
+else
+{
+    <p>No se encontró el usuario.</p>
+    <a asp-action="ListarUsuarios" class="btn btn-secondary">Volver a la lista</a>
+}
