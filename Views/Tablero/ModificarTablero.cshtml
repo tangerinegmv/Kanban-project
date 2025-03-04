@@ -2,15 +2,18 @@
     ViewData["Title"] = "ModificarTablero";
 }
 
-@model Kanban.Tablero
+@model Kanban.ViewModels.ModificarTableroViewModel
 
-<form asp-controller="Tablero" asp-action="ModificarTablero">
+<form asp-controller="Tablero" asp-action="ModificarTablero" method="post">
   <div class="mb-3">
     <label asp-for=@Model.Nombre class="form-label">Nombre</label>
     <input asp-for=@Model.Nombre type="text" class="form-control">
+    <span asp-validation-for="Nombre" class="text-danger"></span>
+  </div>
+  <div class="mb-3">
     <label asp-for=@Model.Descripcion class="form-label">Descripcion</label>
     <input asp-for=@Model.Descripcion type="text" class="form-control">
-    
+    <span asp-validation-for="Descripcion" class="text-danger"></span>
   </div>    
   <button type="submit" class="btn btn-outline-success">Modificar</button>
    <a asp-action="Listar" class="btn btn-secondary">Cancelar</a>

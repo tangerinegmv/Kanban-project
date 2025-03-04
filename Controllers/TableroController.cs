@@ -108,13 +108,58 @@ public class TableroController : Controller
     [HttpGet]
     public IActionResult ModificarTablero(int id)
     {
-        return View(_tableroRepository.ObtenerTablero(id));
+        try
+        {
+            if (HttpContext.Session.GetString("IsAuthenticated") != null)
+            {
+                Tablero tablero = _tableroRepository.ObtenerTablero(id);
+                ModificarTableroViewModel modificarTablero = new ModificarTableroViewModel();
+                
+                modificarTablero.Nombre = tablero.Nombre;
+                modificarTablero.Descripcion = tablero.Descripcion;
+                return View(modificarTablero);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            
+        }
+        catch (System.Exception ex)
+        {
+            
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo cargar el formulario de modificación de tablero";
+            return RedirectToAction("Listar");
+        }
     }
     [HttpPost]
-    public IActionResult ModificarTablero(int id, Tablero tablero)
+    public IActionResult ModificarTablero(int id, ModificarTableroViewModel tablero)
     {
-        _tableroRepository.ModificarTablero(id, tablero);
-        return RedirectToAction("Index");
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Datos inválidos para la modificación del tablero.");
+                ViewBag.ErrorMessage = "Datos inválidos.";
+                return View(tablero);
+            }
+            
+            Tablero modificado = new Tablero();
+            modificado.Id = id;
+            modificado.Nombre = tablero.Nombre;
+            modificado.Descripcion = tablero.Descripcion;
+            _tableroRepository.ModificarTablero(id, modificado);
+            return RedirectToAction("Listar");
+            
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo modificar el tablero";
+            return RedirectToAction("Listar");
+            
+        }
     }
 
     [HttpGet]
