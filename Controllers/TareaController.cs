@@ -76,6 +76,7 @@ public class TareaController: Controller
         var tareas = _tareaRepository.ListarTareasPorTablero(idTablero);
         ViewData["IdTablero"] = idTablero;
         ViewData["NombreTablero"] = tablero.Nombre;
+        ViewData["IdUsuarioPropietario"] = tablero.IdUsuarioPropietario;
         return View(tareas);
     }
     [HttpGet]
@@ -104,11 +105,17 @@ public class TareaController: Controller
                 return RedirectToAction("Index", "Login");
 
             var tarea = _tareaRepository.Detalles(id);
+            int idUsuarioLogueado = (int)HttpContext.Session.GetInt32("Id");
+            if (tarea.IdUsuarioAsignado != idUsuarioLogueado)
+            {
+                TempData["ErrorMessage"] = "No tienes permiso para modificar esta tarea.";
+                return RedirectToAction("ListarTareasPorTablero", new { idTablero = tarea.IdTablero });
+            }
+
             ModificarTareaViewModel modificarTarea = new ModificarTareaViewModel();
-            modificarTarea.Nombre = tarea.Nombre;
-            modificarTarea.Descripcion = tarea.Descripcion;
-            modificarTarea.Color = tarea.Color;
+           
             modificarTarea.Estado = tarea.Estado;
+
             return View(modificarTarea);
         }
         catch (System.Exception ex)
@@ -137,13 +144,20 @@ public class TareaController: Controller
                 return NotFound();
             }
             
+            int idUsuarioLogueado = (int)HttpContext.Session.GetInt32("Id");
+
+            if (tareaExistente.IdUsuarioAsignado != idUsuarioLogueado)
+            {
+                TempData["ErrorMessage"] = "No tienes permiso para modificar esta tarea.";
+                return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
+            }
+
             Tarea tareaModificada = new Tarea();
-            tareaModificada.Nombre = tarea.Nombre;  
-            tareaModificada.Descripcion = tarea.Descripcion;
-            tareaModificada.Color = tarea.Color;
             tareaModificada.Estado = tarea.Estado;
+
             _tareaRepository.ModificarTarea(id, tareaModificada);
-            return RedirectToAction("Listar","Tablero");
+            return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
+        
         }
         catch (System.Exception ex)
         {

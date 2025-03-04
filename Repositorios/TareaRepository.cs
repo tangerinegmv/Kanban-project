@@ -139,15 +139,12 @@ public class TareaRepository: ITareaRepository
     {
         using SqliteConnection connection = new SqliteConnection(_connectionString);
         var query = @"UPDATE Tarea 
-                        SET nombre = @nombre, descripcion = @descripcion, color = @color, estado = @estado
+                        SET estado = @estado
                         WHERE id = @id;
                         ";
         connection.Open();
         using var command = new SqliteCommand(query, connection);
         command.Parameters.Add(new SqliteParameter("@id", id));
-        command.Parameters.Add(new SqliteParameter("@nombre", tarea.Nombre));
-        command.Parameters.Add(new SqliteParameter("@descripcion", tarea.Descripcion));
-        command.Parameters.Add(new SqliteParameter("@color", tarea.Color));
         command.Parameters.Add(new SqliteParameter("@estado", tarea.Estado));
 
         command.ExecuteNonQuery();

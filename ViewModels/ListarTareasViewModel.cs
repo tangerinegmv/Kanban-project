@@ -10,6 +10,7 @@ public class ListarTareasViewModel
     private string descripcion;
     private string color;
     private int? idUsuarioAsignado;
+    private int idUsuarioPropietario;
 
     public int IdTablero { get => idTablero; set => idTablero = value; }
     public string Nombre { get => nombre; set => nombre = value; }
@@ -18,4 +19,5 @@ public class ListarTareasViewModel
     public EstadoTarea Estado { get; set; }
     public int? IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
     public int Id { get => id; set => id = value; }
+    //public int IdUsuarioPropietario { get => idUsuarioPropietario; set => idUsuarioPropietario = value; }
 }
