@@ -2,57 +2,109 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     int idUsuario = HttpContextAccessor.HttpContext.Session.GetInt32("Id").Value;
-    
 }
+
 @model List<Kanban.ViewModels.ListarTareasViewModel>
 
 @{
     ViewData["Title"] = "Tareas del Tablero " + ViewData["NombreTablero"];
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
         @TempData["ErrorMessage"]
     </div>
 }
-<h1>Tareas del Tablero @ViewData["NombreTablero"]</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var tarea in Model)
+<h1 class="text-center">Tareas del Tablero @ViewData["NombreTablero"]</h1>
+
+@functions {
+    string ObtenerNombreEstado(int estado)
+    {
+        return estado switch
         {
-            <tr style="background-color:@tarea.Color;">
-                <td>@tarea.Nombre</td>
-                <td>@tarea.Descripcion</td>
-                <td>@tarea.Estado</td>
-                <td>
-                    @if (tarea.IdUsuarioAsignado == idUsuario || ViewData["IdUsuarioPropietario"].ToString() ==idUsuario.ToString())
-                    {
-                        <a asp-controller="Tarea" asp-action="ModificarTarea" asp-route-id="@tarea.Id" class="btn btn-primary">Modificar</a>
-                        <a asp-controller="Tarea" asp-action="EliminarTarea" asp-route-id="@tarea.Id" class="btn btn-danger">Eliminar</a>
-                        <a asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@tarea.Id" class="btn btn-warning">Asignar Usuario</a>
-                    }
-                    else
-                    {
-                        <span>Solo lectura</span>
-                    }
-                </td>
-                
-            </tr>
-        }
-    </tbody>
-</table>
+            1 => "Ideas",
+            2 => "ToDo",
+            3 => "Doing",
+            4 => "Review",
+            5 => "Done",
+            _ => "Desconocido"
+        };
+    }
+}
 
-<div class="text-center">
-    <a asp-controller="Tablero" asp-action="Listar" class="btn btn-secondary">Volver a Tableros</a>
-    <a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-secondary" asp-route-idTablero="@ViewData["IdTablero"]">Agregar Tarea</a>
+<div class="container">
+    <div class="row">
+        <!-- 🧠 Ideas -->
+        <div class="col-md-2">
+            <h4 class="text-center bg-secondary text-white p-2">🧠 Ideas</h4>
+            <div class="kanban-column">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Ideas)) // Estado = 1
+                {
+                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                }
+            </div>
+        </div>
 
+        <!-- 📝 To Do -->
+        <div class="col-md-2">
+            <h4 class="text-center bg-light p-2">📝 To Do</h4>
+            <div class="kanban-column">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.ToDo)) // Estado = 2
+                {
+                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                }
+            </div>
+        </div>
+
+        <!-- 🚀 Doing -->
+        <div class="col-md-2">
+            <h4 class="text-center bg-primary text-white p-2">🚀 Doing</h4>
+            <div class="kanban-column">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Doing)) // Estado = 3
+                {
+                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                }
+            </div>
+        </div>
+
+        <!-- 🔍 Review -->
+        <div class="col-md-2">
+            <h4 class="text-center bg-warning text-dark p-2">🔍 Review</h4>
+            <div class="kanban-column">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Review)) // Estado = 4
+                {
+                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                }
+            </div>
+        </div>
+
+        <!-- ✅ Done -->
+        <div class="col-md-2">
+            <h4 class="text-center bg-success text-white p-2">✅ Done</h4>
+            <div class="kanban-column">
+                @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Done)) // Estado = 5
+                {
+                    <partial name="_TareaCard" model="tarea" view-data='@ViewData' />
+                }
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="text-center mt-4">
+    <a asp-controller="Tablero" asp-action="Listar" class="btn btn-secondary">Volver a Tableros</a>
+    <a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-success" asp-route-idTablero="@ViewData["IdTablero"]">Agregar Tarea</a>
+</div>
+
+@section Styles {
+    <style>
+        .kanban-column {
+            min-height: 250px;
+            padding: 10px;
+            background-color: rgba(240, 240, 240, 0.8);
+            border-radius: 8px;
+        }
+    </style>
+}

@@ -69,7 +69,10 @@ public class TableroRepository: ITableroRepository
             List<ListarTablerosViewModel> listaTablero = new List<ListarTablerosViewModel>();
             using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
-                string query = "SELECT * FROM Tablero WHERE id_usuario_propietario = @id_usuario_propietario;";
+                string query = @"SELECT t.id, t.id_usuario_propietario, t.nombre, t.descripcion, u.nombre_de_usuario AS nombre_propietario
+                                FROM Tablero t
+                                JOIN Usuario u ON t.id_usuario_propietario = u.id
+                                WHERE t.id_usuario_propietario = @id_usuario_propietario;";
                 SqliteCommand command = new SqliteCommand(query, connection);
                 command.Parameters.Add(new SqliteParameter("@id_usuario_propietario", idUsuario));
                 connection.Open();
@@ -78,11 +81,12 @@ public class TableroRepository: ITableroRepository
                     while (reader.Read())
                     {
                     var tablero = new ListarTablerosViewModel();
-                    tablero.Id= Convert.ToInt32(reader["id"]);
-                    tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
-                    tablero.Nombre= reader["nombre"].ToString();
-                    tablero.Descripcion=reader["descripcion"].ToString();
-                        listaTablero.Add(tablero);
+                    tablero.Id = Convert.ToInt32(reader["id"]);
+                    tablero.IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]);
+                    tablero.Nombre = reader["nombre"].ToString();
+                    tablero.Descripcion = reader["descripcion"].ToString();
+                    tablero.NombreUsuarioPropietario = reader["nombre_propietario"].ToString(); // Agregar el nombre del propietario
+                    listaTablero.Add(tablero);
                     }
                 }
                 connection.Close();
@@ -94,11 +98,11 @@ public class TableroRepository: ITableroRepository
         List<ListarTablerosViewModel> listaTablero = new List<ListarTablerosViewModel>();
             using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
-                string query = @"
-                SELECT DISTINCT t.id, t.id_usuario_propietario, t.nombre, t.descripcion
-                FROM Tablero t
-                INNER JOIN Tarea ta ON ta.id_tablero = t.id
-                WHERE ta.id_usuario_asignado = @idUsuario";
+                string query = @"SELECT DISTINCT t.id, t.id_usuario_propietario, t.nombre, t.descripcion, u.nombre_de_usuario AS nombre_propietario
+                                FROM Tablero t
+                                INNER JOIN Tarea ta ON ta.id_tablero = t.id
+                                JOIN Usuario u ON t.id_usuario_propietario = u.id
+                                WHERE ta.id_usuario_asignado = @idUsuario;";
                 SqliteCommand command = new SqliteCommand(query, connection);
                 command.Parameters.Add(new SqliteParameter("@idUsuario", idUsuario));
                 connection.Open();
@@ -107,10 +111,11 @@ public class TableroRepository: ITableroRepository
                     while (reader.Read())
                     {
                     var tablero = new ListarTablerosViewModel();
-                    tablero.Id= Convert.ToInt32(reader["id"]);
-                    tablero.IdUsuarioPropietario= Convert.ToInt32(reader["id_usuario_propietario"]);
-                    tablero.Nombre= reader["nombre"].ToString();
-                    tablero.Descripcion=reader["descripcion"].ToString();
+                        tablero.Id = Convert.ToInt32(reader["id"]);
+                        tablero.IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]);
+                        tablero.Nombre = reader["nombre"].ToString();
+                        tablero.Descripcion = reader["descripcion"].ToString();
+                        tablero.NombreUsuarioPropietario = reader["nombre_propietario"].ToString(); // Agregar el nombre del propietario
                         listaTablero.Add(tablero);
                     }
                 }

@@ -35,11 +35,14 @@ public class TableroController : Controller
             .GroupBy(t => t.Id)
             .Select(g => g.First())
             .ToList();
+
+            
         return View(tableros);
     }
 
     public IActionResult ListarTablerosPorUsuario(int idUsuario)
     {
+        
         return View(_tableroRepository.ListarTablerosPorUsuario(idUsuario));
     }
 

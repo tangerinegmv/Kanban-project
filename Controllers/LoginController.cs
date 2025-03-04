@@ -64,6 +64,7 @@ public class LoginController:Controller
             HttpContext.Session.SetString("Usuario", usuario.NombreDeUsuario);
             HttpContext.Session.SetString("Rol", usuario.RolUsuario.ToString());
             HttpContext.Session.SetInt32("Id", usuario.Id);
+             _logger.LogInformation("Nombre de Usuario: " + HttpContext.Session.GetString("Usuario"));
             _logger.LogInformation("El usuario " + usuario.NombreDeUsuario + " ha iniciado sesión.");
             return RedirectToAction("Listar", "Tablero");
         

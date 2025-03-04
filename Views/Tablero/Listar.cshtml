@@ -4,51 +4,39 @@
     ViewData["Title"] = "Tablero";
 }
 
-<h2>Mis Tableros</h2>
+<h2 class="text-center mb-4">Mis Tableros</h2>
 
-<div class="kanban-board">
+<div class="row">
     @foreach (var board in Model)
     {
-        <div class="board">
-            <h3>@board.Nombre</h3>
-            <p><strong>ID:</strong> @board.Id</p>
-            <p><strong>Owner ID:</strong> @board.IdUsuarioPropietario</p>
-            <p><strong>Description:</strong> @board.Descripcion</p>
-            <button type="button" class="btn btn-primary">
-                <a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>
-            </button>
-            <button type="button" class="btn btn-primary">
-                <a class="nav-link text-light" asp-area="" asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@board.Id">Tareas</a>
-            <button type="button" class="btn btn-danger">
-                <a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@board.Id">Eliminar</a>
-            </button>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@board.Nombre</h5>
+                    <p><strong>ID:</strong> @board.Id</p>
+                    <p><strong>Propietario:</strong> @board.NombreUsuarioPropietario</p> <!-- Asumí que tienes NombreUsuarioPropietario -->
+                    <p><strong>Descripción:</strong> @board.Descripcion</p>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a class="btn btn-primary btn-sm" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>
+                        <a class="btn btn-secondary btn-sm" asp-area="" asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@board.Id">Tareas</a>
+                        <a class="btn btn-danger btn-sm" asp-area="" asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@board.Id">Eliminar</a>
+                    </div>
+                </div>
+            </div>
         </div>
     }
 </div>
-<div class="text-center">
-    <button type="button" class="btn btn-success">
-        <a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="CrearTablero">Crear tablero</a>
-    </button>
+
+<div class="text-center mt-4">
+    <a class="btn btn-success" asp-area="" asp-controller="Tablero" asp-action="CrearTablero">Crear Tablero</a>
 </div>
+
 <style>
-    .kanban-board {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .board {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin: 10px;
-        width: 200px;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .board button {
-        margin-top: 10px;
-    }
-    .board a {
-        text-decoration: none;
+    .card-title {
+        font-size: 1.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
