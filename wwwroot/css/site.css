@@ -62,3 +62,30 @@ body {
 .dark-theme .navbar-toggler-icon {
   filter: invert(1); /* Hace que el icono de hamburguesa sea blanco */
 }
+.kanban-column {
+  min-height: 300px;
+  padding: 10px;
+  background-color: rgba(240, 240, 240, 0.8);
+  border-radius: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Reduce el margen entre tarjetas */
+}
+
+.kanban-item {
+
+  background-color: white;
+  border-radius: 5px;
+  
+  transition: transform 0.2s;
+  
+}
+
+.kanban-item:active {
+  transform: scale(1.05);
+}
+
+.kanban-column:hover {
+  background-color: rgba(220, 220, 220, 0.9);
+}

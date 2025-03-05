@@ -4,61 +4,100 @@
     string rol = HttpContextAccessor.HttpContext.Session.GetString("Rol");
     string admin = Rol.Administrador.ToString();
 }
+
 @if (ViewBag.ErrorMessage != null)
 {
     <div class="alert alert-danger" role="alert">
         @ViewBag.ErrorMessage
     </div>
 }
-@* @if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMessage"]
-    </div>
-} *@
+
 @{
     ViewData["Title"] = "Usuarios";
 }
 
-
-
 @model List<Kanban.ViewModels.ListarUsuariosViewModel>
 
-<div class="text-center">
-    <h1 class="display-4">Listado de usuarios</h1>
+<div class="text-center mb-4">
+    <h1 class="display-4">Listado de Usuarios</h1>
 </div>
-<table class="table table-primary table-striped">
-    <thead>
-    <tr>
-      <th scope="col">Nombre de Usuario</th>
-      <th scope="col">Rol</th>
-      <th scope=" col"></th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    
-    @foreach(var usuario in Model)
-    {
+
+<table class="table table-hover table-striped">
+    <thead class="table-dark">
         <tr>
-            <td>@usuario.NombreDeUsuario</td>
-            <td>@usuario.RolUsuario</td>
-            @* <td><button type="button" class="btn btn-primary"><a class="nav-link text-light" asp-area="" asp-controller="Tablero" asp-action="ListarTablerosPorUsuario" asp-route-idUsuario="@usuario.Id">Tableros</a></button></td>  *@
-            
-            @if(rol == admin)
+            <th scope="col">Nombre de Usuario</th>
+            <th scope="col">Rol</th>
+            @if (rol == admin)
             {
-            <td><button type="button" class="btn btn-primary"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="CambiarPassword" asp-route-id="@usuario.Id">Cambiar Contraseña</a></button></td>
-            <td><button type="button" class="btn btn-primary"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="ModificarUsuario" asp-route-id="@usuario.Id">Modificar</a></button></td>
-            <td><button type="button" class="btn btn-danger"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-id="@usuario.Id">Eliminar</a></button></td>
-            }        
+                <th scope="col" class="text-center">Acciones</th>
+            }
         </tr>
-    
-    }
-  </tbody>
+    </thead>
+    <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>
+                <td>@usuario.NombreDeUsuario</td>
+                <td>@usuario.RolUsuario</td>
+                @if (rol == admin)
+                {
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-primary btn-sm" asp-controller="Usuario" asp-action="CambiarPassword" asp-route-id="@usuario.Id" title="Cambiar Contraseña">
+                                <i class="fas fa-key"></i>
+                            </a>
+                            <a class="btn btn-warning btn-sm" asp-controller="Usuario" asp-action="ModificarUsuario" asp-route-id="@usuario.Id" title="Modificar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-id="@usuario.Id" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
 </table>
-@if(rol == admin)
+
+@if (rol == admin)
 {
-<div class="text-center">
-    <button type="button" class="btn btn-success"><a class="nav-link text-light" asp-area="" asp-controller="Usuario" asp-action="CrearUsuario">Crear usuario</a></button>
-</div>
+    <div class="text-center mt-4">
+        <a class="btn btn-success" asp-controller="Usuario" asp-action="CrearUsuario">
+            <i class="fas fa-user-plus"></i> Crear Usuario
+        </a>
+    </div>
+}
+
+@section Styles {
+    <style>
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+        .dark-theme .table-hover tbody tr:hover {
+            background-color: #333 !important;
+        }
+        .dark-theme .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #2c2c2c;
+        }
+        .dark-theme .table-striped tbody tr:nth-of-type(even) {
+            background-color: #3c3c3c;
+        }
+        .dark-theme .table-dark {
+            background-color: #1c1c1c;
+            color: #ffffff;
+        }
+        .dark-theme .table-hover tbody tr {
+            color: #ffffff;
+        }
+        .dark-theme .btn-group .btn {
+            color: #ffffff;
+        }
+    </style>
 }

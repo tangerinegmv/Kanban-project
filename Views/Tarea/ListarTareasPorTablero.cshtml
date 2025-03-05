@@ -52,10 +52,12 @@
         <!-- 🧠 Ideas -->
         <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-secondary text-white p-2">🧠 Ideas</h4>
-            <div class="kanban-column flex-grow-1">
+            <div class="kanban-column flex-grow-1" data-estado="1">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Ideas))
                 {
-                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    <div class="kanban-item" data-id="@tarea.Id">
+                        <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    </div>
                 }
             </div>
         </div>
@@ -63,10 +65,12 @@
         <!-- 📝 To Do -->
         <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-light text-dark p-2">📝 To Do</h4>
-            <div class="kanban-column flex-grow-1">
+            <div class="kanban-column flex-grow-1" data-estado="2">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.ToDo))
                 {
-                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    <div class="kanban-item" data-id="@tarea.Id">
+                        <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    </div>
                 }
             </div>
         </div>
@@ -74,10 +78,12 @@
         <!-- 🚀 Doing -->
         <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-primary text-white p-2">🚀 Doing</h4>
-            <div class="kanban-column flex-grow-1">
+            <div class="kanban-column flex-grow-1" data-estado="3">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Doing))
                 {
-                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    <div class="kanban-item" data-id="@tarea.Id">
+                        <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    </div>
                 }
             </div>
         </div> 
@@ -85,10 +91,12 @@
         <!-- 🔍 Review -->
         <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-warning text-dark p-2">🔍 Review</h4>
-            <div class="kanban-column flex-grow-1">
+            <div class="kanban-column flex-grow-1" data-estado="4">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Review))
                 {
-                    <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    <div class="kanban-item" data-id="@tarea.Id">
+                        <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
+                    </div>
                 }
             </div>
         </div>
@@ -96,10 +104,12 @@
         <!-- ✅ Done -->
         <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-success text-white p-2">✅ Done</h4>
-            <div class="kanban-column flex-grow-1">
+            <div class="kanban-column flex-grow-1" data-estado="5">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Done))
                 {
-                    <partial name="_TareaCard" model="tarea" view-data='@ViewData' />
+                    <div class="kanban-item" data-id="@tarea.Id">
+                        <partial name="_TareaCard" model="tarea" view-data='@ViewData' />
+                    </div>
                 }
             </div>
         </div>

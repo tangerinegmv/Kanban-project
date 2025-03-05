@@ -6,15 +6,21 @@
     int idUsuarioPropietario = (int)ViewData["IdUsuarioPropietario"];
 }
 
-<div class="card mb-2 shadow-sm" style="background-color:@Model.Color; color: white;">
+<div class="card shadow-sm" style="background-color:@Model.Color; color: white; border: none;">
     <div class="card-body">
-        <h5 class="card-title">@Model.Nombre</h5>
+        <h5 class="card-title" title="@Model.Nombre">@Model.Nombre</h5>
         <p class="card-text">@Model.Descripcion</p>
 
         @if (Model.IdUsuarioAsignado == idUsuario || idUsuarioPropietario == idUsuario)
         {
-            <a asp-controller="Tarea" asp-action="ModificarTarea" asp-route-id="@Model.Id" class="btn btn-light btn-sm">Modificar</a>
-            <a asp-controller="Tarea" asp-action="EliminarTarea" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">Eliminar</a>
+            <div class="btn-group mb-2" role="group">
+                <a class="btn btn-light btn-sm" asp-controller="Tarea" asp-action="ModificarTarea" asp-route-id="@Model.Id" title="Modificar">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-danger btn-sm" asp-controller="Tarea" asp-action="EliminarTarea" asp-route-id="@Model.Id" title="Eliminar">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </div>
             @if (idUsuarioPropietario == idUsuario)
             {
                 @if(Model.IdUsuarioAsignado.HasValue)
@@ -23,7 +29,9 @@
                 }
                 else
                 {
-                    <a asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@Model.Id" class="btn btn-warning btn-sm">Asignar Usuario</a>
+                    <a class="btn btn-warning btn-sm" asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@Model.Id" title="Asignar Usuario">
+                        <i class="fas fa-user-plus"></i>
+                    </a>
                 }
             }
         }
