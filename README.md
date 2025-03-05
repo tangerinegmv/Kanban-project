@@ -1,6 +1,6 @@
 # Kanban Project
 
-Este es un proyecto de Kanban desarrollado en ASP.NET Core. El proyecto permite a los usuarios gestionar tareas en diferentes tableros, asignar tareas a usuarios y cambiar el estado de las tareas.
+Este es un proyecto de Kanban desarrollado en ASP.NET Core. Permite a los usuarios gestionar tareas en diferentes tableros, asignar tareas a usuarios y cambiar el estado de las tareas. El proyecto incluye características como soporte para tema oscuro, niveles de acceso y autorizaciones, validaciones de datos y manejo de excepciones.
 
 ## Características
 
@@ -89,6 +89,15 @@ El proyecto utiliza ViewModels para gestionar los datos que se pasan entre las v
 - **ViewModels**: Contiene las clases de modelo de vista.
 - **Repositorios**: Contiene las clases de repositorio para acceder a la base de datos.
 - **wwwroot**: Contiene los archivos estáticos como CSS, JavaScript e imágenes.
+
+## Librerías Externas
+
+El proyecto utiliza varias librerías externas para mejorar la funcionalidad y la apariencia de la aplicación. Algunas de las librerías utilizadas incluyen:
+
+- **Bootstrap**: Para el diseño y la estructura de la interfaz de usuario.
+  - [Documentación de Bootstrap](https://getbootstrap.com/docs/5.1/getting-started/introduction/)
+- **Font Awesome**: Para los iconos utilizados en la aplicación.
+  - [Documentación de Font Awesome](https://fontawesome.com/v5.15/how-to-use/on-the-web/setup/getting-started)
 
 ## Contribuir
 
