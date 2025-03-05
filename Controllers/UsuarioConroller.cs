@@ -189,12 +189,31 @@ public class UsuarioController : Controller
     [HttpGet]
     public IActionResult CambiarPassword(int id)
     {
+        int idUsuarioLogueado = (int)HttpContext.Session.GetInt32("Id");
+        string rolUsuario = HttpContext.Session.GetString("Rol");
+
+        if (rolUsuario != Rol.Administrador.ToString() && idUsuarioLogueado != id)
+        {
+            TempData["ErrorMessage"] = "No tienes permiso para cambiar la contraseña de otro usuario.";
+            return RedirectToAction("ListarUsuarios");
+        }
+
         return View(_usuarioRepository.Detalles(id));
+
     }
 
     [HttpPost]
     public IActionResult CambiarPassword(int id, Usuario usuario)
     {
+        int idUsuarioLogueado = (int)HttpContext.Session.GetInt32("Id");
+        string rolUsuario = HttpContext.Session.GetString("Rol");
+
+        if (rolUsuario != Rol.Administrador.ToString() && idUsuarioLogueado != id)
+        {
+            TempData["ErrorMessage"] = "No tienes permiso para cambiar la contraseña de otro usuario.";
+            return RedirectToAction("ListarUsuarios");
+        }
+
         _usuarioRepository.CambiarPassword(id, usuario);
         return RedirectToAction("ListarUsuarios");
     }

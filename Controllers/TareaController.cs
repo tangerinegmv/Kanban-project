@@ -79,7 +79,18 @@ public class TareaController: Controller
     [HttpGet]
     public IActionResult ListarTareasPorTablero(int idTablero)
     {
+        int idUsuario = (int)HttpContext.Session.GetInt32("Id");
         var tablero = _tableroRepository.ObtenerTablero(idTablero);
+        bool esPropietario = tablero.IdUsuarioPropietario == idUsuario;
+        bool tieneTareasAsignadas = _tareaRepository.ListarTareasPorTablero(idTablero)
+            .Any(t => t.IdUsuarioAsignado == idUsuario);
+
+        if (!esPropietario && !tieneTareasAsignadas)
+        {
+            TempData["ErrorMessage"] = "No tienes permiso para ver este tablero.";
+            return RedirectToAction("Listar", "Tablero");
+        }
+
         var tareas = _tareaRepository.ListarTareasPorTablero(idTablero);
 
         var tareasViewModel = tareas.Select(t => new ListarTareasViewModel
@@ -95,6 +106,8 @@ public class TareaController: Controller
         ViewData["IdTablero"] = idTablero;
         ViewData["NombreTablero"] = tablero.Nombre;
         ViewData["IdUsuarioPropietario"] = tablero.IdUsuarioPropietario;
+        ViewData["NombrePropietario"] = _usuarioRepository.Detalles(tablero.IdUsuarioPropietario).NombreDeUsuario;
+
         return View(tareasViewModel);
     }
     [HttpGet]

@@ -18,7 +18,7 @@
 }
 
 <h1 class="text-center">Tareas del Tablero @ViewData["NombreTablero"]</h1>
-
+<h3 class="text-center">Propietario: @ViewData["NombrePropietario"]</h3>
 @functions {
     string ObtenerNombreEstado(int estado)
     {
@@ -35,9 +35,9 @@
 }
 
 <div class="container-fluid">
-    <div class="row d-flex justify-content-around">
+    <div class="row d-flex justify-content-center gx-1">
         <!-- 🧠 Ideas -->
-        <div class="col-12 col-md-2 d-flex flex-column">
+        <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-secondary text-white p-2">🧠 Ideas</h4>
             <div class="kanban-column flex-grow-1">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Ideas))
@@ -48,7 +48,7 @@
         </div>
 
         <!-- 📝 To Do -->
-        <div class="col-12 col-md-2 d-flex flex-column">
+        <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-light text-dark p-2">📝 To Do</h4>
             <div class="kanban-column flex-grow-1">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.ToDo))
@@ -59,7 +59,7 @@
         </div>
 
         <!-- 🚀 Doing -->
-        <div class="col-12 col-md-2 d-flex flex-column">
+        <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-primary text-white p-2">🚀 Doing</h4>
             <div class="kanban-column flex-grow-1">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Doing))
@@ -70,7 +70,7 @@
         </div>
 
         <!-- 🔍 Review -->
-        <div class="col-12 col-md-2 d-flex flex-column">
+        <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-warning text-dark p-2">🔍 Review</h4>
             <div class="kanban-column flex-grow-1">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Review))
@@ -81,7 +81,7 @@
         </div>
 
         <!-- ✅ Done -->
-        <div class="col-12 col-md-2 d-flex flex-column">
+        <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">
             <h4 class="text-center bg-success text-white p-2">✅ Done</h4>
             <div class="kanban-column flex-grow-1">
                 @foreach (var tarea in Model.Where(t => t.Estado == EstadoTarea.Done))
@@ -93,11 +93,6 @@
     </div>
 </div>
 
-<div class="text-center mt-4">
-    <a asp-controller="Tablero" asp-action="Listar" class="btn btn-secondary">Volver a Tableros</a>
-    <a asp-controller="Tarea" asp-action="CrearTarea" class="btn btn-success" asp-route-idTablero="@ViewData["IdTablero"]">Agregar Tarea</a>
-</div>
-
 @section Styles {
     <style>
         .kanban-column {
@@ -106,13 +101,21 @@
             background-color: rgba(240, 240, 240, 0.8);
             border-radius: 8px;
             overflow-y: auto; /* Agrega scroll si hay muchas tareas */
-        
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* Reduce el margen entre tarjetas */
         }
+        
+        .row {
+            gap: 5px; /* Reduce el espacio entre columnas */
+        }
+
         .card-title {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .dark-theme .bg-light {
             background-color: #4b4b4b !important;
             color: #ffffff !important;
