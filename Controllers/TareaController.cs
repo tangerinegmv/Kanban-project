@@ -97,21 +97,21 @@ public class TareaController: Controller
         var tareas = _tareaRepository.ListarTareasPorTablero(idTablero);
 
         var tareasViewModel = tareas.Select(t => new ListarTareasViewModel
-    {
-        Id = t.Id,
-        Nombre = t.Nombre,
-        Descripcion = t.Descripcion,
-        Color = t.Color,
-        Estado = t.Estado,
-        IdUsuarioAsignado = t.IdUsuarioAsignado,
-        NombreUsuarioAsignado = t.IdUsuarioAsignado.HasValue ? _usuarioRepository.Detalles(t.IdUsuarioAsignado.Value).NombreDeUsuario : null
-    }).ToList();
-        ViewData["IdTablero"] = idTablero;
-        ViewData["NombreTablero"] = tablero.Nombre;
-        ViewData["IdUsuarioPropietario"] = tablero.IdUsuarioPropietario;
-        ViewData["NombrePropietario"] = _usuarioRepository.Detalles(tablero.IdUsuarioPropietario).NombreDeUsuario;
+        {
+            Id = t.Id,
+            Nombre = t.Nombre,
+            Descripcion = t.Descripcion,
+            Color = t.Color,
+            Estado = t.Estado,
+            IdUsuarioAsignado = t.IdUsuarioAsignado,
+            NombreUsuarioAsignado = t.IdUsuarioAsignado.HasValue ? _usuarioRepository.Detalles(t.IdUsuarioAsignado.Value).NombreDeUsuario : null
+        }).ToList();
+            ViewData["IdTablero"] = idTablero;
+            ViewData["NombreTablero"] = tablero.Nombre;
+            ViewData["IdUsuarioPropietario"] = tablero.IdUsuarioPropietario;
+            ViewData["NombrePropietario"] = _usuarioRepository.Detalles(tablero.IdUsuarioPropietario).NombreDeUsuario;
 
-        return View(tareasViewModel);
+            return View(tareasViewModel);
     }
     [HttpGet]
     public IActionResult ListarTareasPorUsuario(int idUsuario)
