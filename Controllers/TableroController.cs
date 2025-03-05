@@ -24,6 +24,12 @@ public class TableroController : Controller
    //[HttpGet]
     public IActionResult Listar()
     {
+        if (HttpContext.Session.GetString("IsAuthenticated") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+          
+
         int idUsuario = ObtenerUsuarioLogueado(); // Método para obtener el ID del usuario logueado
 
         List<ListarTablerosViewModel> tablerosPropios = _tableroRepository.ListarTablerosPorUsuario(idUsuario);
@@ -62,7 +68,7 @@ public class TableroController : Controller
             }
             else
             {
-                return RedirectToAction("Listar", "Tablero");
+                return RedirectToAction("Index", "Login");
             }
             
         }
@@ -174,7 +180,7 @@ public class TableroController : Controller
     public IActionResult EliminarTablero(Tablero tablero)
     {
         _tableroRepository.EliminarTablero(tablero.Id);
-        return RedirectToAction("Index");
+        return RedirectToAction("Listar");
     }
     
 }

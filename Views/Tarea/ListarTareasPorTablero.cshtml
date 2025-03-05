@@ -19,6 +19,19 @@
 
 <h1 class="text-center">Tareas del Tablero @ViewData["NombreTablero"]</h1>
 <h3 class="text-center">Propietario: @ViewData["NombrePropietario"]</h3>
+
+<div class="d-flex justify-content-between mb-3">
+    <a class="btn btn-secondary" asp-controller="Tablero" asp-action="Listar">
+        <i class="fas fa-arrow-left"></i> Volver a Tableros
+    </a>
+    @if (idUsuario == (int)ViewData["IdUsuarioPropietario"])
+    {
+        <a class="btn btn-success" asp-controller="Tarea" asp-action="CrearTarea" asp-route-idTablero="@ViewData["IdTablero"]">
+            <i class="fas fa-plus-circle"></i> Agregar Tarea
+        </a>
+    }
+</div>
+
 @functions {
     string ObtenerNombreEstado(int estado)
     {
@@ -67,7 +80,7 @@
                     <partial name="_TareaCard" model="tarea" view-data='@ViewData'/>
                 }
             </div>
-        </div>
+        </div> 
 
         <!-- 🔍 Review -->
         <div class="col-12 col-md-2 flex-grow-1 d-flex flex-column">

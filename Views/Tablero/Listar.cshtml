@@ -1,41 +1,82 @@
 @model List<Kanban.ViewModels.ListarTablerosViewModel>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Tablero";
+    int idUsuario = HttpContextAccessor.HttpContext.Session.GetInt32("Id").Value;
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
         @TempData["ErrorMessage"]
     </div>
 }
+
 <h2 class="text-center mb-4">Mis Tableros</h2>
 
-<div class="row">
+<div class="row mb-4">
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar tableros..." />
+    </div>
+    <div class="col-md-6 text-end">
+        <a class="btn btn-success" asp-area="" asp-controller="Tablero" asp-action="CrearTablero">Crear Tablero</a>
+    </div>
+</div>
+
+<div class="row" id="boardContainer">
     @foreach (var board in Model)
     {
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4 board-card">
             <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">@board.Nombre</h5>
-                    <p><strong>ID:</strong> @board.Id</p>
-                    <p><strong>Propietario:</strong> @board.NombreUsuarioPropietario</p> <!-- Asumí que tienes NombreUsuarioPropietario -->
-                    <p><strong>Descripción:</strong> @board.Descripcion</p>
-                    
-                    <div class="d-flex justify-content-between">
+                <a asp-area="" asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@board.Id" class="text-decoration-none text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">@board.Nombre</h5>
+                        <p><strong>ID:</strong> @board.Id</p>
+                        <p><strong>Propietario:</strong> @board.NombreUsuarioPropietario</p>
+                        <p><strong>Descripción:</strong> @board.Descripcion</p>
+                    </div>
+                </a>
+                @if (idUsuario == board.IdUsuarioPropietario)
+                {
+                    <div class="card-footer d-flex justify-content-between">
                         <a class="btn btn-primary btn-sm" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>
-                        <a class="btn btn-secondary btn-sm" asp-area="" asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@board.Id">Tareas</a>
                         <a class="btn btn-danger btn-sm" asp-area="" asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@board.Id">Eliminar</a>
                     </div>
-                </div>
+                }
             </div>
         </div>
     }
 </div>
 
 <div class="text-center mt-4">
-    <a class="btn btn-success" asp-area="" asp-controller="Tablero" asp-action="CrearTablero">Crear Tablero</a>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+        </ul>
+    </nav>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            var filter = this.value.toLowerCase();
+            var boards = document.getElementsByClassName('board-card');
+            Array.from(boards).forEach(function(board) {
+                var title = board.querySelector('.card-title').textContent.toLowerCase();
+                if (title.includes(filter)) {
+                    board.style.display = '';
+                } else {
+                    board.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}
 
 <style>
     .card-title {
@@ -43,5 +84,21 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+    .board-card {
+        transition: transform 0.2s;
+    }
+    .board-card:hover {
+        transform: scale(1.05);
+    }
+    .card-footer {
+        background-color: #f8f9fa;
+    }
+    .dark-theme .card-body, .dark-theme .card-footer {
+        background-color: #333;
+        color: #fff;
+    }
+    .dark-theme .text-dark {
+        color: #fff !important;
     }
 </style>

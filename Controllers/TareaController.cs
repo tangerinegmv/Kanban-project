@@ -79,6 +79,9 @@ public class TareaController: Controller
     [HttpGet]
     public IActionResult ListarTareasPorTablero(int idTablero)
     {
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
+                return RedirectToAction("Index", "Login");
+                
         int idUsuario = (int)HttpContext.Session.GetInt32("Id");
         var tablero = _tableroRepository.ObtenerTablero(idTablero);
         bool esPropietario = tablero.IdUsuarioPropietario == idUsuario;
@@ -144,8 +147,9 @@ public class TareaController: Controller
             }
 
             ModificarTareaViewModel modificarTarea = new ModificarTareaViewModel();
-           
             modificarTarea.Estado = tarea.Estado;
+
+            ViewData["idTablero"] = tarea.IdTablero;
 
             return View(modificarTarea);
         }
@@ -229,8 +233,14 @@ public class TareaController: Controller
     [HttpPost]
     public IActionResult Asignar(int idTarea, int idUsuario)
     {
+         var tarea = _tareaRepository.Detalles(idTarea);
+        if (tarea == null)
+        {
+            return NotFound();
+        }
+
         _tareaRepository.AsignarUsuario(idTarea, idUsuario);
-        return RedirectToAction("Listar","Tablero"); // Redirigir a la lista de tareas
+        return RedirectToAction("ListarTareasPorTablero", new { idTablero = tarea.IdTablero });
     }
 
 }

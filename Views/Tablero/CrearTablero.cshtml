@@ -1,6 +1,6 @@
 @model Kanban.ViewModels.CrearTableroViewModel
 @{
-    ViewData["Title"] = "CrearTablero";
+    ViewData["Title"] = "Crear Tablero";
 }
 @if (TempData["ErrorMessage"] != null)
 {
@@ -8,26 +8,35 @@
         @TempData["ErrorMessage"]
     </div>
 }
-<div class="text-center">
-    
-    <h1 class="display-4">Crear Tablero</h1>
-
-
-<form asp-controller="Tablero" asp-action="CrearTablero" method="post">
-  <div class="mb-3">
-    <label asp-for=@Model.Nombre class="form-label">Nombre del Tablero</label>
-    <input asp-for=@Model.Nombre type="text" class="form-control">
-    <span asp-validation-for="Nombre" class="text-danger"></span>
-  </div>
-  <div class="mb-3">
-    <label asp-for=@Model.Descripcion class="form-label">Descripcion</label>
-    <input asp-for=@Model.Descripcion type="text" class="form-control">
-    <span asp-validation-for="Descripcion" class="text-danger"></span>
-  </div>    
-  <button type="submit" class="btn btn-outline-success">Crear</button>
-   <a asp-action="Listar" class="btn btn-secondary">Cancelar</a>
-</form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="display-4 text-center mb-4">Crear Tablero</h1>
+                    <form asp-controller="Tablero" asp-action="CrearTablero" method="post">
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label">Nombre del Tablero</label>
+                            <input asp-for="Nombre" type="text" class="form-control" placeholder="Ingrese el nombre del tablero">
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Descripcion" class="form-label">Descripción</label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Ingrese una descripción"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-outline-success"><i class="fas fa-plus-circle"></i> Crear</button>
+                            <a asp-action="Listar" class="btn btn-secondary"><i class="fas fa-times-circle"></i> Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 }

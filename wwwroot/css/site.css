@@ -49,3 +49,16 @@ body {
   background-color: #4b4b4b !important;
   color: #ffffff !important;
 }
+.dark-theme .navbar {
+  background-color: #000000 !important; /* Fondo negro en modo oscuro */
+  color: #ffffff !important;
+}
+
+.dark-theme .navbar-light .navbar-nav .nav-link,
+.dark-theme .navbar-light .navbar-brand {
+  color: #ffffff !important;
+}
+
+.dark-theme .navbar-toggler-icon {
+  filter: invert(1); /* Hace que el icono de hamburguesa sea blanco */
+}
