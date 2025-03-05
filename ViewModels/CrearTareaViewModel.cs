@@ -11,10 +11,10 @@ public class CrearTareaViewModel
 
     [Required]
     public int IdTablero { get => idTablero; set => idTablero = value; }
-    [Required]
-    [StringLength(100, ErrorMessage = "El nombre de tarea no debe exceder los 100 caracteres.")]
+    
+    [Required(ErrorMessage = "El nombre de tarea es obligatorio")]
     public string Nombre { get => nombre; set => nombre = value; }
-    [Required]
+    [Required(ErrorMessage ="Elegir estado es obligatorio.")]
     [Range(1, 5, ErrorMessage = "El estado debe ser 1 (Ideas), 2 (Todo), 3 (Doing), 4 (Review), 5 (Done)")]
     public EstadoTarea Estado { get => estado; set => estado = value; }
     [Required]
