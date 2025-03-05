@@ -166,6 +166,10 @@ public class TableroRepository: ITableroRepository
 
     public void EliminarTablero(int id)
     {
+        if(Verificar(id))
+        {
+            throw new InvalidOperationException("No se puede eliminar el tablero porque tiene tareas asociadas.");
+        }
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             string query = "DELETE FROM Tablero WHERE id = @id;";
@@ -177,5 +181,21 @@ public class TableroRepository: ITableroRepository
                 connection.Close();
             }
         }
+    }
+
+    private bool Verificar(int id)
+    {
+        bool tieneTareas = false;
+        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        {
+            string query = "SELECT COUNT(*) FROM Tarea WHERE id_tablero = @id;";
+            SqliteCommand command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            connection.Open();
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            tieneTareas = count > 0;
+            connection.Close();
+        }
+        return tieneTareas;
     }
 }

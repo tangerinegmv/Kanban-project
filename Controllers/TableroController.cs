@@ -174,13 +174,33 @@ public class TableroController : Controller
     [HttpGet]
     public IActionResult EliminarTablero(int id)
     {
+        if (HttpContext.Session.GetString("IsAuthenticated") == null)
+        {
+            return RedirectToAction("Index", "Login");
+        }
         return View(_tableroRepository.ObtenerTablero(id));
     }
     [HttpPost]
     public IActionResult EliminarTablero(Tablero tablero)
     {
-        _tableroRepository.EliminarTablero(tablero.Id);
-        return RedirectToAction("Listar");
+        try
+        {
+            _tableroRepository.EliminarTablero(tablero.Id);
+            return RedirectToAction("Listar");
+        }
+        catch(InvalidOperationException ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = ex.Message;
+            return RedirectToAction("Listar");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = "No se pudo eliminar el tablero";
+            return RedirectToAction("Listar");
+        }
+        
     }
     
 }
