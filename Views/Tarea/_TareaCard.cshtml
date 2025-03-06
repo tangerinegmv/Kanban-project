@@ -1,9 +1,11 @@
+@using Kanban
 @model Kanban.ViewModels.ListarTareasViewModel
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
     int idUsuario = HttpContextAccessor.HttpContext.Session.GetInt32("Id").Value;
     int idUsuarioPropietario = (int)ViewData["IdUsuarioPropietario"];
+    bool esAdmin = HttpContextAccessor.HttpContext.Session.GetString("Rol") == Rol.Administrador.ToString();
 }
 
 <div class="card shadow-sm" style="background-color:@Model.Color; color: white; border: none;">
@@ -11,7 +13,7 @@
         <h5 class="card-title" title="@Model.Nombre">@Model.Nombre</h5>
         <p class="card-text">@Model.Descripcion</p>
 
-        @if (Model.IdUsuarioAsignado == idUsuario || idUsuarioPropietario == idUsuario)
+        @if (Model.IdUsuarioAsignado == idUsuario || idUsuarioPropietario == idUsuario || esAdmin)
         {
             <div class="btn-group mb-2" role="group">
                 <a class="btn btn-light btn-sm" asp-controller="Tarea" asp-action="ModificarTarea" asp-route-id="@Model.Id" title="Modificar">
@@ -21,7 +23,7 @@
                     <i class="fas fa-trash-alt"></i>
                 </a>
             </div>
-            @if (idUsuarioPropietario == idUsuario)
+            @if (idUsuarioPropietario == idUsuario || esAdmin)
             {
                 @if(Model.IdUsuarioAsignado.HasValue)
                 {

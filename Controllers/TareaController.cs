@@ -87,8 +87,8 @@ public class TareaController: Controller
         bool esPropietario = tablero.IdUsuarioPropietario == idUsuario;
         bool tieneTareasAsignadas = _tareaRepository.ListarTareasPorTablero(idTablero)
             .Any(t => t.IdUsuarioAsignado == idUsuario);
-
-        if (!esPropietario && !tieneTareasAsignadas)
+        bool esAdmin = HttpContext.Session.GetString("Rol") == Rol.Administrador.ToString();
+        if (!esPropietario && !tieneTareasAsignadas && !esAdmin)
         {
             TempData["ErrorMessage"] = "No tienes permiso para ver este tablero.";
             return RedirectToAction("Listar", "Tablero");

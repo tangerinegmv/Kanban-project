@@ -11,7 +11,7 @@
 
 <form asp-controller="Tarea" asp-action="ModificarTarea" method="post">
     <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="IdUsuarioAsignado" />
+    
     
     @if (esPropietarioOAdmin)
     {
@@ -59,11 +59,12 @@
         <input type="hidden" asp-for="Nombre" />
         <input type="hidden" asp-for="Descripcion" />
         <input type="hidden" asp-for="Color" />
+        <input type="hidden" asp-for="IdUsuarioAsignado" />
     }
 
     <div class="mb-3">
         <label asp-for="Estado" class="form-label">Estado</label>
-        <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<EstadoTarea>()">
+        <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<Kanban.EstadoTarea>()">
         </select>
         <span asp-validation-for="Estado" class="text-danger"></span>
     </div>
