@@ -132,7 +132,6 @@ public class TareaController: Controller
     [HttpGet]
     public IActionResult ModificarTarea(int id)
     {
-        
         try
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("IsAuthenticated")))
@@ -140,27 +139,45 @@ public class TareaController: Controller
 
             var tarea = _tareaRepository.Detalles(id);
             int idUsuarioLogueado = (int)HttpContext.Session.GetInt32("Id");
-            if (tarea.IdUsuarioAsignado != idUsuarioLogueado)
+            string rolUsuarioLogueado = HttpContext.Session.GetString("Rol");
+            var tablero = _tableroRepository.ObtenerTablero(tarea.IdTablero);
+
+            bool esPropietarioOAdmin = tablero.IdUsuarioPropietario == idUsuarioLogueado || rolUsuarioLogueado == Rol.Administrador.ToString();
+            ViewData["EsPropietarioOAdmin"] = esPropietarioOAdmin;
+
+            if (tarea.IdUsuarioAsignado != idUsuarioLogueado && !esPropietarioOAdmin)
             {
                 TempData["ErrorMessage"] = "No tienes permiso para modificar esta tarea.";
                 return RedirectToAction("ListarTareasPorTablero", new { idTablero = tarea.IdTablero });
             }
 
-            ModificarTareaViewModel modificarTarea = new ModificarTareaViewModel();
-            modificarTarea.Estado = tarea.Estado;
+            if (esPropietarioOAdmin)
+            {
+                ViewBag.Usuarios = _usuarioRepository.ListarUsuarios();
+            }
+
+            ModificarTareaViewModel modificarTarea = new ModificarTareaViewModel
+            {
+                Id = tarea.Id,
+                Nombre = tarea.Nombre,
+                Descripcion = tarea.Descripcion,
+                Color = tarea.Color,
+                Estado = tarea.Estado,
+                IdUsuarioAsignado = tarea.IdUsuarioAsignado
+            };
 
             ViewData["idTablero"] = tarea.IdTablero;
 
             return View(modificarTarea);
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            
             _logger.LogError(ex.ToString());
             TempData["ErrorMessage"] = "No se pudo cargar la vista de modificación de tarea";
-            return RedirectToAction("Listar","Tablero");
+            return RedirectToAction("Listar", "Tablero");
         }
     }
+
     [HttpPost]
     public IActionResult ModificarTarea(int id, ModificarTareaViewModel tarea)
     {
@@ -178,31 +195,39 @@ public class TareaController: Controller
             {
                 return NotFound();
             }
-            
-            int idUsuarioLogueado = (int)HttpContext.Session.GetInt32("Id");
 
-            if (tareaExistente.IdUsuarioAsignado != idUsuarioLogueado)
+            int idUsuarioLogueado = (int)HttpContext.Session.GetInt32("Id");
+            string rolUsuarioLogueado = HttpContext.Session.GetString("Rol");
+            var tablero = _tableroRepository.ObtenerTablero(tareaExistente.IdTablero);
+
+            bool esPropietarioOAdmin = tablero.IdUsuarioPropietario == idUsuarioLogueado || rolUsuarioLogueado == Rol.Administrador.ToString();
+
+            if (tareaExistente.IdUsuarioAsignado != idUsuarioLogueado && !esPropietarioOAdmin)
             {
                 TempData["ErrorMessage"] = "No tienes permiso para modificar esta tarea.";
                 return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
             }
 
-            Tarea tareaModificada = new Tarea();
-            tareaModificada.Estado = tarea.Estado;
+            tareaExistente.Estado = tarea.Estado;
 
-            _tareaRepository.ModificarTarea(id, tareaModificada);
+            if (esPropietarioOAdmin)
+            {
+                tareaExistente.Nombre = tarea.Nombre;
+                tareaExistente.Descripcion = tarea.Descripcion;
+                tareaExistente.Color = tarea.Color;
+                tareaExistente.IdUsuarioAsignado = tarea.IdUsuarioAsignado;
+            }
+
+            _tareaRepository.ModificarTarea(id, tareaExistente);
             ViewData["idTablero"] = tareaExistente.IdTablero;
             return RedirectToAction("ListarTareasPorTablero", new { idTablero = tareaExistente.IdTablero });
-        
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            
             _logger.LogError(ex.ToString());
             TempData["ErrorMessage"] = "No se pudo modificar la tarea";
-            return RedirectToAction("Listar","Tablero");
+            return RedirectToAction("Listar", "Tablero");
         }
-        
     }
 
     [HttpGet]

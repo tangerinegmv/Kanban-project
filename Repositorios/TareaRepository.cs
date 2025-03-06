@@ -148,20 +148,22 @@ public class TareaRepository: ITareaRepository
 
     public void ModificarTarea(int id, Tarea tarea)
     {
-        try{ 
+        try
+        {
             using SqliteConnection connection = new SqliteConnection(_connectionString);
             var query = @"UPDATE Tarea 
-                            SET estado = @estado
-                            WHERE id = @id;
-                            ";
+                          SET nombre = @nombre, descripcion = @descripcion, color = @color, estado = @estado, id_usuario_asignado = @id_usuario_asignado
+                          WHERE id = @id;";
             connection.Open();
             using var command = new SqliteCommand(query, connection);
             command.Parameters.Add(new SqliteParameter("@id", id));
+            command.Parameters.Add(new SqliteParameter("@nombre", tarea.Nombre));
+            command.Parameters.Add(new SqliteParameter("@descripcion", tarea.Descripcion));
+            command.Parameters.Add(new SqliteParameter("@color", tarea.Color));
             command.Parameters.Add(new SqliteParameter("@estado", tarea.Estado));
+            command.Parameters.Add(new SqliteParameter("@id_usuario_asignado", tarea.IdUsuarioAsignado.HasValue ? (object)tarea.IdUsuarioAsignado.Value : DBNull.Value));
 
             command.ExecuteNonQuery();
-
-
             connection.Close();
         }
         catch

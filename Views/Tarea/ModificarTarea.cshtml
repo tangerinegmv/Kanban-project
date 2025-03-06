@@ -1,25 +1,75 @@
+@using Kanban
 @model Kanban.ViewModels.ModificarTareaViewModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Modificar Tarea";
+    bool esPropietarioOAdmin = ViewData["EsPropietarioOAdmin"] != null && Convert.ToBoolean(ViewData["EsPropietarioOAdmin"]);
 }
 
 <h1>Modificar Tarea</h1>
 
 <form asp-controller="Tarea" asp-action="ModificarTarea" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="IdUsuarioAsignado" />
+    
+    @if (esPropietarioOAdmin)
+    {
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label">Nombre</label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Descripcion" class="form-label">Descripción</label>
+            <textarea asp-for="Descripcion" class="form-control"></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Color" class="form-label">Color</label>
+            <select asp-for="Color" class="form-control">
+                <option value="#ff0000">Rojo</option>
+                <option value="#00ff00">Verde</option>
+                <option value="#0000ff">Azul</option>
+                <option value="#ffff00">Amarillo</option>
+                <option value="#ff00ff">Magenta</option>
+            </select>
+            <span asp-validation-for="Color" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="IdUsuarioAsignado" class="form-label">Asignar Usuario</label>
+            <select asp-for="IdUsuarioAsignado" class="form-control">
+                <option value="">Seleccione un usuario</option>
+                @if (ViewBag.Usuarios != null)
+                {
+                    foreach (var usuario in ViewBag.Usuarios)
+                    {
+                        <option value="@usuario.Id" selected="@(usuario.Id == Model.IdUsuarioAsignado)">
+                            @usuario.NombreDeUsuario
+                        </option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="IdUsuarioAsignado" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <!-- Si el usuario no puede editar, guarda los valores actuales en campos ocultos -->
+        <input type="hidden" asp-for="Nombre" />
+        <input type="hidden" asp-for="Descripcion" />
+        <input type="hidden" asp-for="Color" />
+    }
+
     <div class="mb-3">
         <label asp-for="Estado" class="form-label">Estado</label>
-        <select asp-for="Estado" class="form-control">
-            <option value="1">Ideas</option>
-            <option value="2">To Do</option>
-            <option value="3">Doing</option>
-            <option value="4">Review</option>
-            <option value="5">Done</option>
+        <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<EstadoTarea>()">
         </select>
         <span asp-validation-for="Estado" class="text-danger"></span>
     </div>
+
     <button type="submit" class="btn btn-primary">Modificar</button>
-<a asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@ViewData["idTablero"]" class="btn btn-secondary">Cancelar</a>
+    <a asp-controller="Tarea" asp-action="ListarTareasPorTablero" asp-route-idTablero="@ViewData["idTablero"]" class="btn btn-secondary">Cancelar</a>
 </form>
 
 @section Scripts {
