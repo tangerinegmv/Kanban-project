@@ -36,7 +36,12 @@ public class TableroRepository: ITableroRepository
             }
         
         }
+        if (nuevo == null)
+        {
+            throw new Exception("No se pudo crear el tablero.");
+        }
         return nuevo;
+
     }
     public List<ListarTablerosViewModel> ListarTableros()
     {
@@ -60,6 +65,10 @@ public class TableroRepository: ITableroRepository
                 }
             }
             connection.Close();
+        }
+        if(listaTablero.Count == 0)
+        {
+            throw new Exception("No se encontraron tableros.");
         }
         return listaTablero;
     }
@@ -90,6 +99,10 @@ public class TableroRepository: ITableroRepository
                     }
                 }
                 connection.Close();
+            }
+            if (listaTablero.Count == 0)
+            {
+                throw new Exception("No se encontraron tableros.");
             }
             return listaTablero;
         }
