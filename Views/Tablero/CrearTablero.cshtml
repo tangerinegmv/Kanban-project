@@ -1,13 +1,19 @@
+@using Kanban
 @model Kanban.ViewModels.CrearTableroViewModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Crear Tablero";
+    bool esAdministrador = HttpContextAccessor.HttpContext.Session.GetString("Rol") == Rol.Administrador.ToString();
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
         @TempData["ErrorMessage"]
     </div>
 }
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -25,6 +31,20 @@
                             <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Ingrese una descripción"></textarea>
                             <span asp-validation-for="Descripcion" class="text-danger"></span>
                         </div>
+                        @if (esAdministrador)
+                        {
+                            <div class="mb-3">
+                                <label asp-for="IdUsuarioPropietario" class="form-label">Propietario del Tablero</label>
+                                <select asp-for="IdUsuarioPropietario" class="form-control">
+                                    <option value="">Seleccione un propietario</option>
+                                    @foreach (var usuario in ViewBag.Usuarios)
+                                    {
+                                        <option value="@usuario.Id">@usuario.NombreDeUsuario</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="IdUsuarioPropietario" class="text-danger"></span>
+                            </div>
+                        }
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-outline-success"><i class="fas fa-plus-circle"></i> Crear</button>
                             <a asp-action="Listar" class="btn btn-secondary"><i class="fas fa-times-circle"></i> Cancelar</a>
