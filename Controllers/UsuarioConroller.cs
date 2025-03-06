@@ -75,6 +75,12 @@ public class UsuarioController : Controller
             Usuario nuevo = _usuarioRepository.CrearUsuario(usuario);
             return RedirectToAction("ListarUsuarios");
         }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = ex.Message;
+            return View(new CrearUsuarioViewModel());
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex.ToString());
@@ -104,6 +110,7 @@ public class UsuarioController : Controller
                 return RedirectToAction("ListarUsuarios");
             }
         }
+        
         catch (Exception ex)
         {
             _logger.LogError(ex.ToString());

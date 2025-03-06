@@ -14,6 +14,11 @@ public class UsuarioRepository: IUsuarioRepository
 
     public Usuario CrearUsuario(CrearUsuarioViewModel usuario)
     {
+        if (ListarUsuarios().Any(x => x.NombreDeUsuario == usuario.NombreDeUsuario))
+        {
+            throw new InvalidOperationException("El nombre de usuario ya existe.");
+        }
+
         Usuario nuevoUsuario = null;
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
@@ -25,18 +30,19 @@ public class UsuarioRepository: IUsuarioRepository
             command.Parameters.Add(new SqliteParameter("@rolusuario", usuario.RolUsuario));
             command.ExecuteNonQuery();
 
-            command.CommandText = "SELECT MAX(id) FROM Tarea";
+            command.CommandText = "SELECT MAX(id) FROM Usuario";
             int idGenerado = Convert.ToInt32(command.ExecuteScalar());
 
-            nuevoUsuario = new Usuario();
-            nuevoUsuario.Id = idGenerado;
-            nuevoUsuario.NombreDeUsuario = usuario.NombreDeUsuario;
-            nuevoUsuario.Password = usuario.Password;
-            nuevoUsuario.RolUsuario = (Rol)usuario.RolUsuario;
+            nuevoUsuario = new Usuario
+            {
+                Id = idGenerado,
+                NombreDeUsuario = usuario.NombreDeUsuario,
+                Password = usuario.Password,
+                RolUsuario = (Rol)usuario.RolUsuario
+            };
             connection.Close();
-            //NO ANDA
-
         }
+
         if (nuevoUsuario == null)
         {
             throw new Exception("No se pudo crear el usuario.");
