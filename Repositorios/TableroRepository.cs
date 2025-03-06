@@ -158,22 +158,33 @@ public class TableroRepository: ITableroRepository
             }
             connection.Close();
         }
+        if(tablero.Id == 0)
+        {
+            throw new Exception("No se encontró el tablero.");
+        }
         return tablero;
     }
     public void ModificarTablero(int id, Tablero tablero)
     {
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        try
         {
-            string query = "UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion WHERE id = @id;";
-            connection.Open();
-            using (SqliteCommand command = new SqliteCommand(query, connection))
+            using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
-                command.Parameters.Add(new SqliteParameter("@id", id));
-                command.Parameters.Add(new SqliteParameter("@nombre", tablero.Nombre));
-                command.Parameters.Add(new SqliteParameter("@descripcion", tablero.Descripcion));
-                command.ExecuteNonQuery();
-                connection.Close();
+                string query = "UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion WHERE id = @id;";
+                connection.Open();
+                using (SqliteCommand command = new SqliteCommand(query, connection))
+                {
+                    command.Parameters.Add(new SqliteParameter("@id", id));
+                    command.Parameters.Add(new SqliteParameter("@nombre", tablero.Nombre));
+                    command.Parameters.Add(new SqliteParameter("@descripcion", tablero.Descripcion));
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
+        }
+        catch
+        {
+            throw new Exception("No se pudo modificar el tablero.");
         }
     }
 
