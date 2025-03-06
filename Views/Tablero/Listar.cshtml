@@ -43,7 +43,7 @@
                         <p><strong>Descripción:</strong> @board.Descripcion</p>
                     </div>
                 </a>
-                @if (idUsuario == board.IdUsuarioPropietario)
+                @if (idUsuario == board.IdUsuarioPropietario || esAdministrador)
                 {
                     <div class="card-footer d-flex justify-content-between">
                         <a class="btn btn-primary btn-sm" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>

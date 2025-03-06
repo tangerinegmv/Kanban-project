@@ -37,13 +37,12 @@
                         <p><strong>Descripción:</strong> @board.Descripcion</p>
                     </div>
                 </a>
-                @if (idUsuario == board.IdUsuarioPropietario)
-                {
-                    <div class="card-footer d-flex justify-content-between">
-                        <a class="btn btn-primary btn-sm" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>
-                        <a class="btn btn-danger btn-sm" asp-area="" asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@board.Id">Eliminar</a>
-                    </div>
-                }
+                
+                <div class="card-footer d-flex justify-content-between">
+                    <a class="btn btn-primary btn-sm" asp-area="" asp-controller="Tablero" asp-action="ModificarTablero" asp-route-id="@board.Id">Modificar</a>
+                    <a class="btn btn-danger btn-sm" asp-area="" asp-controller="Tablero" asp-action="EliminarTablero" asp-route-id="@board.Id">Eliminar</a>
+                </div>
+               
             </div>
         </div>
     }
