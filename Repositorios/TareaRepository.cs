@@ -48,6 +48,10 @@ public class TareaRepository: ITareaRepository
                 connection.Close();
             }
         }
+        if (nueva == null)
+        {
+            throw new Exception("No se pudo crear la tarea.");
+        }
         return nueva;
     }
     public List<ListarTareasViewModel> ListarTareasPorTablero(int idTablero)
@@ -76,6 +80,10 @@ public class TareaRepository: ITareaRepository
             }
             connection.Close();
         }
+        if (listaTarea.Count == 0)
+        {
+            throw new Exception("No se encontraron tareas para el tablero.");
+        }
         return listaTarea;
     }
 
@@ -103,7 +111,10 @@ public class TareaRepository: ITareaRepository
                 }
             }
             connection.Close();
-        
+        if (listaTarea.Count == 0)
+        {
+            throw new Exception("No se encontraron tareas para el usuario.");
+        }
         return listaTarea;
 
     }
@@ -132,54 +143,76 @@ public class TareaRepository: ITareaRepository
             }
             connection.Close();
         }
+        if (tarea.Id == 0)
+        {
+            throw new Exception("No se encontró la tarea.");
+        } 
+        
         return tarea;
     }
 
     public void ModificarTarea(int id, Tarea tarea)
     {
-        using SqliteConnection connection = new SqliteConnection(_connectionString);
-        var query = @"UPDATE Tarea 
-                        SET estado = @estado
-                        WHERE id = @id;
-                        ";
-        connection.Open();
-        using var command = new SqliteCommand(query, connection);
-        command.Parameters.Add(new SqliteParameter("@id", id));
-        command.Parameters.Add(new SqliteParameter("@estado", tarea.Estado));
+        try{ 
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
+            var query = @"UPDATE Tarea 
+                            SET estado = @estado
+                            WHERE id = @id;
+                            ";
+            connection.Open();
+            using var command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            command.Parameters.Add(new SqliteParameter("@estado", tarea.Estado));
 
-        command.ExecuteNonQuery();
+            command.ExecuteNonQuery();
 
 
-        connection.Close();
-
+            connection.Close();
+        }
+        catch
+        {
+            throw new Exception("No se pudo modificar la tarea.");
+        }
     }
 
     public void EliminarTarea(int id)
     {
-        using SqliteConnection connection = new SqliteConnection(_connectionString);
-        var query = @"DELETE FROM Tarea WHERE id = @id;";
-        connection.Open();
-        using SqliteCommand command = new SqliteCommand(query, connection);
-        command.Parameters.Add(new SqliteParameter("@id", id));
-        command.ExecuteNonQuery();
-        connection.Close();
+        try{
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
+            var query = @"DELETE FROM Tarea WHERE id = @id;";
+            connection.Open();
+            using SqliteCommand command = new SqliteCommand(query, connection);
+            command.Parameters.Add(new SqliteParameter("@id", id));
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+        catch
+        {
+            throw new Exception("No se pudo eliminar la tarea.");
+        }
     }
 
     public void AsignarUsuario(int idTarea, int idUsuario)
     {
-        using SqliteConnection connection = new SqliteConnection(_connectionString);
-        {
-            connection.Open();
-            string query = "UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id = @idTarea";
-
-            using SqliteCommand command = new SqliteCommand(query, connection);
+        try{
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
             {
-                command.Parameters.AddWithValue("@idUsuario", idUsuario);
-                command.Parameters.AddWithValue("@idTarea", idTarea);
-                command.ExecuteNonQuery();
-                connection.Close();
+                connection.Open();
+                string query = "UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id = @idTarea";
+
+                using SqliteCommand command = new SqliteCommand(query, connection);
+                {
+                    command.Parameters.AddWithValue("@idUsuario", idUsuario);
+                    command.Parameters.AddWithValue("@idTarea", idTarea);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
         }
-    }
+        catch
+        {
+            throw new Exception("No se pudo asignar el usuario a la tarea.");
+        }
     
+    }
 }

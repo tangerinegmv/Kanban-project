@@ -37,6 +37,10 @@ public class UsuarioRepository: IUsuarioRepository
             //NO ANDA
 
         }
+        if (nuevoUsuario == null)
+        {
+            throw new Exception("No se pudo crear el usuario.");
+        }
         return nuevoUsuario;
     }
 
@@ -61,6 +65,10 @@ public class UsuarioRepository: IUsuarioRepository
             }
             connection.Close();
 
+        }
+        if (listaUsuario == null)
+        {
+            throw new Exception("No se pudo listar los usuarios.");
         }
         return listaUsuario;
     }
@@ -87,6 +95,10 @@ public class UsuarioRepository: IUsuarioRepository
                 connection.Close();
 
             }
+            if (usuario == null)
+            {
+                throw new Exception("No se pudo encontrar el usuario.");
+            }
             return usuario;
         }
     public void ModificarUsuario(int id, ModificarUsuarioViewModel usuario)
@@ -111,6 +123,7 @@ public class UsuarioRepository: IUsuarioRepository
             throw new Exception("No se pudo modificar el usuario.");
         }
         connection.Close();
+
     } 
     public void EliminarUsuario(int id)
     {
@@ -143,7 +156,12 @@ public class UsuarioRepository: IUsuarioRepository
             var command = new SqliteCommand(query, connection);
             command.Parameters.Add(new SqliteParameter("@id", id));
             command.Parameters.Add(new SqliteParameter("@password", usuario.Password ?? throw new ArgumentNullException(nameof(usuario.Password))));
-            command.ExecuteNonQuery();
+            int filasAfectadas = command.ExecuteNonQuery();
+
+            if (filasAfectadas == 0) // si no hay filas afectadas es porque no se modificó
+            {
+                throw new Exception("No se pudo modificar el usuario.");
+            }
             connection.Close();
         }
     }
@@ -174,7 +192,12 @@ public class UsuarioRepository: IUsuarioRepository
     var command = new SqliteCommand(query, connection);
     command.Parameters.Add(new SqliteParameter("@idUsuario", idUsuario));
     command.Parameters.Add(new SqliteParameter("@idTarea", idTarea));
-    command.ExecuteNonQuery();
+    int filasAfectadas = command.ExecuteNonQuery();
+
+        if (filasAfectadas == 0) // si no hay filas afectadas es porque no se modificó
+        {
+            throw new Exception("No se pudo modificar el usuario.");
+        }
     connection.Close();
     }
 
