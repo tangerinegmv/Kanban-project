@@ -133,6 +133,12 @@ public class UsuarioController : Controller
             _usuarioRepository.ModificarUsuario(id, usuario);
             return RedirectToAction("ListarUsuarios");
         }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex.ToString());
+            TempData["ErrorMessage"] = ex.Message;
+            return View(new ModificarUsuarioViewModel());
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex.ToString());

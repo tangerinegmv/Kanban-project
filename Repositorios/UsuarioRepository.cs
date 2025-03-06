@@ -108,11 +108,15 @@ public class UsuarioRepository: IUsuarioRepository
             return usuario;
         }
     public void ModificarUsuario(int id, ModificarUsuarioViewModel usuario)
+    {
+        if (ListarUsuarios().Any(x => x.NombreDeUsuario == usuario.NombreDeUsuario))
         {
+            throw new InvalidOperationException("El nombre de usuario ya existe.");
+        }
         using SqliteConnection connection = new SqliteConnection(_connectionString);
         var query = @"UPDATE Usuario SET 
-                              nombre_de_usuario = COALESCE(@nombre_de_usuario, nombre_de_usuario), 
-                              rolusuario = COALESCE(@RolUsuario, rolusuario) WHERE id = @id;";
+                            nombre_de_usuario = COALESCE(@nombre_de_usuario, nombre_de_usuario), 
+                            rolusuario = COALESCE(@RolUsuario, rolusuario) WHERE id = @id;";
         connection.Open();
         var command = new SqliteCommand(query, connection);
         command.Parameters.AddWithValue("@id", id);

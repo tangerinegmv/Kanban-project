@@ -12,32 +12,31 @@
     <div class="card-body">
         <h5 class="card-title" title="@Model.Nombre">@Model.Nombre</h5>
         <p class="card-text">@Model.Descripcion</p>
-
-        @if (Model.IdUsuarioAsignado == idUsuario || idUsuarioPropietario == idUsuario || esAdmin)
-        {
-            <div class="btn-group mb-2" role="group">
+        <div class="btn-group mb-2" role="group">
+            @if (Model.IdUsuarioAsignado == idUsuario || idUsuarioPropietario == idUsuario || esAdmin)
+            {
                 <a class="btn btn-light btn-sm" asp-controller="Tarea" asp-action="ModificarTarea" asp-route-id="@Model.Id" title="Modificar">
                     <i class="fas fa-edit"></i>
                 </a>
+            }
+            @if (idUsuarioPropietario == idUsuario || esAdmin)
+            {
                 <a class="btn btn-danger btn-sm" asp-controller="Tarea" asp-action="EliminarTarea" asp-route-id="@Model.Id" title="Eliminar">
                     <i class="fas fa-trash-alt"></i>
                 </a>
-            </div>
+            }
             @if (idUsuarioPropietario == idUsuario || esAdmin)
             {
-                @if(Model.IdUsuarioAsignado.HasValue)
-                {
-                    <span class="badge bg-info text-dark">Asignado a: @Model.NombreUsuarioAsignado</span>
-                }
-                else
-                {
-                    <a class="btn btn-warning btn-sm" asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@Model.Id" title="Asignar Usuario">
-                        <i class="fas fa-user-plus"></i>
-                    </a>
-                }
+                <a class="btn btn-warning btn-sm" asp-controller="Tarea" asp-action="Asignar" asp-route-idTarea="@Model.Id" title="Asignar Usuario">
+                    <i class="fas fa-user-plus"></i>
+                </a>
             }
+        </div>
+        @if (Model.IdUsuarioAsignado.HasValue)
+        {
+            <span class="badge bg-info text-dark">Asignado a: @Model.NombreUsuarioAsignado</span>
         }
-        else
+        @if (!(Model.IdUsuarioAsignado == idUsuario || idUsuarioPropietario == idUsuario || esAdmin))
         {
             <span class="badge bg-secondary">Solo lectura</span>
         }

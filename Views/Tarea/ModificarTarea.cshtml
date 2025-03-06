@@ -11,7 +11,7 @@
 
 <form asp-controller="Tarea" asp-action="ModificarTarea" method="post">
     <input type="hidden" asp-for="Id" />
-    
+    <input type="hidden" asp-for="IdUsuarioAsignado" />
     
     @if (esPropietarioOAdmin)
     {
@@ -36,7 +36,7 @@
             </select>
             <span asp-validation-for="Color" class="text-danger"></span>
         </div>
-        <div class="mb-3">
+        @* <div class="mb-3">
             <label asp-for="IdUsuarioAsignado" class="form-label">Asignar Usuario</label>
             <select asp-for="IdUsuarioAsignado" class="form-control">
                 <option value="">Seleccione un usuario</option>
@@ -51,7 +51,7 @@
                 }
             </select>
             <span asp-validation-for="IdUsuarioAsignado" class="text-danger"></span>
-        </div>
+        </div> *@
     }
     else
     {
@@ -59,7 +59,7 @@
         <input type="hidden" asp-for="Nombre" />
         <input type="hidden" asp-for="Descripcion" />
         <input type="hidden" asp-for="Color" />
-        <input type="hidden" asp-for="IdUsuarioAsignado" />
+        @* <input type="hidden" asp-for="IdUsuarioAsignado" /> *@
     }
 
     <div class="mb-3">
