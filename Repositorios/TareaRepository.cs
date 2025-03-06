@@ -80,10 +80,7 @@ public class TareaRepository: ITareaRepository
             }
             connection.Close();
         }
-        if (listaTarea.Count == 0)
-        {
-            throw new Exception("No se encontraron tareas para el tablero.");
-        }
+        
         return listaTarea;
     }
 
@@ -111,10 +108,8 @@ public class TareaRepository: ITareaRepository
                 }
             }
             connection.Close();
-        if (listaTarea.Count == 0)
-        {
-            throw new Exception("No se encontraron tareas para el usuario.");
-        }
+        
+        
         return listaTarea;
 
     }

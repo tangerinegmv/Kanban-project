@@ -45,6 +45,28 @@ public class TableroController : Controller
             
         return View(tableros);
     }
+    [HttpGet]
+    public IActionResult ListarTodos()
+    {
+        if (HttpContext.Session.GetString("IsAuthenticated") == null)
+        {
+            return RedirectToAction("Index", "Login");
+        }
+
+        if (HttpContext.Session.GetString("Rol") != Rol.Administrador.ToString())
+        {
+            TempData["ErrorMessage"] = "No tienes permiso para ver todos los tableros.";
+            return RedirectToAction("Listar");
+        }
+
+        var tableros = _tableroRepository.ListarTableros();
+        return View(tableros);
+    }
+
+    private int ObtenerUsuarioLogueado()
+    {
+        return (int)HttpContext.Session.GetInt32("Id");
+    }
 
     public IActionResult ListarTablerosPorUsuario(int idUsuario)
     {
@@ -52,10 +74,7 @@ public class TableroController : Controller
         return View(_tableroRepository.ListarTablerosPorUsuario(idUsuario));
     }
 
-    private int ObtenerUsuarioLogueado()
-    {
-        return (int)HttpContext.Session.GetInt32("Id");   
-  }
+    
 
     [HttpGet]
     public IActionResult CrearTablero()

@@ -46,12 +46,19 @@
                         }
                         @if(isAuthenticated)
                         {
+                            
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Tablero" asp-action="Listar">Tableros</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tablero" asp-action="Listar">Mis Tableros</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="ListarUsuarios">Usuarios</a>
                             </li>
+                            @if(rol == admin)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Tablero" asp-action="ListarTodos">Todos los Tableros</a>
+                                </li>
+                            }
                         }
                     </ul>
                     @if(isAuthenticated)
